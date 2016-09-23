@@ -55,21 +55,26 @@ class PlayerProcessor(esper.Processor):
         self.player = player
 
     def process(self, filtered_events, pressed_keys, dt, screen):
+        v = self.world.component_for_entity(self.player, components.Velocity)
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    self.world.component_for_entity(self.player, components.Velocity).x = -100
+                    v.x -= 100
                 elif event.key == pygame.K_RIGHT:
-                    self.world.component_for_entity(self.player, components.Velocity).x = 100
+                    v.x += 100
                 elif event.key == pygame.K_UP:
-                    self.world.component_for_entity(self.player, components.Velocity).y = -100
+                    v.y -= 100
                 elif event.key == pygame.K_DOWN:
-                    self.world.component_for_entity(self.player, components.Velocity).y = 100
+                    v.y += 100
             elif event.type == pygame.KEYUP:
-                if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
-                    self.world.component_for_entity(self.player, components.Velocity).x = 0
-                if event.key in (pygame.K_UP, pygame.K_DOWN):
-                    self.world.component_for_entity(self.player, components.Velocity).y = 0
+                if event.key == pygame.K_LEFT:
+                    v.x += 100
+                elif event.key == pygame.K_RIGHT:
+                    v.x -= 100
+                elif event.key == pygame.K_UP:
+                    v.y += 100
+                elif event.key == pygame.K_DOWN:
+                    v.y -= 100
 
 class VelocityProcessor(esper.Processor):
     def __init__(self):
@@ -81,6 +86,9 @@ class VelocityProcessor(esper.Processor):
 
             p.x = max(min(p.x + v.x * dt, 1280), 0)
             p.y = min(p.y + v.y * dt, 600)
+
+            if p.y >= 600 and v.y > 0:
+                v.y = 0
 
 class AnimationProcessor(esper.Processor):
     def __init__(self):

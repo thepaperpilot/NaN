@@ -26,7 +26,7 @@ class TitleScene(scenebase.SceneBase):
             self.world.add_component(next_scene, components.Delay(2, change_scene))
 
         def quit_game():
-            self.Terminate()
+            self.terminate()
 
         def highlight(entity):
             t = self.world.component_for_entity(entity, components.Text)
