@@ -168,8 +168,9 @@ class PlayerProcessor(esper.Processor):
             p3.y = pos.y - s.height
 
 class PhysicsProcessor(esper.Processor):
-    def __init__(self):
+    def __init__(self, ground=-1):
         esper.Processor.__init__(self)
+        self.ground = ground
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
@@ -178,17 +179,21 @@ class PhysicsProcessor(esper.Processor):
                 v.x *= .98
 
             p.x = max(min(p.x + v.x * dt, 1280), 0)
-            p.y = min(p.y + v.y * dt, 600 - s.height * s.scale / 2)
+            if self.ground != -1:
+                p.y = min(p.y + v.y * dt, self.ground - s.height * s.scale / 2)
 
-            if p.y >= 600 - s.height * s.scale / 2 and v.y > 0:
-                v.y = 0
+                if p.y >= self.ground - s.height * s.scale / 2 and v.y > 0:
+                    v.y = 0
 
-            if p.y >= 600 - s.height * s.scale / 2 and self.world.has_component(ent, components.RotationalVelocity):
-                r = self.world.component_for_entity(ent, components.RotationalVelocity)
-                i = self.world.component_for_entity(ent, components.Image)
-                i.image = r.image
-                s.scale = r.scale
-                self.world.remove_component(ent, components.RotationalVelocity)
+                if p.y >= self.ground - s.height * s.scale / 2 and self.world.has_component(ent, components.RotationalVelocity):
+                    r = self.world.component_for_entity(ent, components.RotationalVelocity)
+                    i = self.world.component_for_entity(ent, components.Image)
+                    i.image = r.image
+                    s.scale = r.scale
+                    self.world.remove_component(ent, components.RotationalVelocity)
+            else:
+                p.y -= v.y * dt
+                
         for ent, (t, p, s)  in self.world.get_components(components.Touch, components.Position, components.Size):
             rect = pygame.Rect(p.x, p.y, s.width, s.height)
             tp = self.world.component_for_entity(t.target, components.Position)

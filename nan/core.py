@@ -11,6 +11,8 @@ def run_game(width, height, titletext, fps, starting_scene):
     starting_scene.init()
     active_scene = starting_scene
 
+    font = pygame.font.Font("RobotoMono-Regular.ttf", 24)
+
     while active_scene is not None:
         dt = clock.tick(fps)
 
@@ -35,6 +37,9 @@ def run_game(width, height, titletext, fps, starting_scene):
                 filtered_events.append(event)
 
         active_scene.world.process(filtered_events, pressed_keys, dt / 1000, screen)
+
+        text = font.render("FPS: " + str(int(1000*1//dt)), True, (0, 128, 0))
+        screen.blit(text, (10, 10))
 
         active_scene = active_scene.next
 
