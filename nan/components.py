@@ -3,12 +3,14 @@ import interpolation
 import pygame
 
 class Player:
-    facing_right_anim=True
-    facing_right_image=True
+    facing_right=True
+    holding=None
 
-    def __init__(self, image=None, animation=None):
+    def __init__(self, image=None, animation=None, carry_image=None, carry_animation=None):
         self.image = image
         self.animation = animation
+        self.carry_image = carry_image
+        self.carry_animation = carry_animation
 
 class Position:
     def __init__(self, x=0.0, y=0.0):

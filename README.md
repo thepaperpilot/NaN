@@ -2,6 +2,22 @@
 
 This is a game made in under 48 hours for Texas A&M's 3rd annual Chillenium. It was made by Anthony Lawn and Grant Barbee. 
 
+Run it by executing:
+
+```
+python core.py
+```
+
+Build it by executing:
+
+```
+python setup.py py2exe
+```
+
+> note that you may need to use "python3" if your default is python2.7
+
+> note that currently the setup script doesn't copy over the non python files correctly, so you'll need to manually move over the font file and images folder
+
 ## Story
 
 You are an adventurer named NaN. You are known throughout the land for your ability to help anyone with anything.

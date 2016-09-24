@@ -10,9 +10,13 @@ class RenderProcessor(esper.Processor):
     def process(self, filtered_events, pressed_keys, dt, screen):
         screen.fill((0, 0, 0))
         for ent, (i, p, s) in self.world.get_components(components.Image, components.Position, components.Size):
+            if self.world.has_component(ent, components.Player):
+                continue
             image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
             screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
         for ent, (a, p, s) in self.world.get_components(components.Animation, components.Position, components.Size):
+            if self.world.has_component(ent, components.Player):
+                continue
             a.time += dt
             frame = (a.time // a.framelength) % a.maxframes
             rect = pygame.Rect(frame * a.splitx, 0, a.splitx, a.image.get_height())
@@ -22,6 +26,18 @@ class RenderProcessor(esper.Processor):
             pygame.draw.circle(screen, c.color, (int(p.x), int(p.y)), c.radius, c.width)
         for ent, (r, p) in self.world.get_components(components.Rect, components.Position):
             pygame.draw.rect(screen, r.color, r.rect)
+        for ent, (pl, p, s) in self.world.get_components(components.Player, components.Position, components.Size):
+            if self.world.has_component(ent, components.Image):
+                i = self.world.component_for_entity(ent, components.Image)
+                image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
+                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
+            elif self.world.has_component(ent, components.Animation):
+                a = self.world.component_for_entity(ent, components.Animation)
+                a.time += dt
+                frame = (a.time // a.framelength) % a.maxframes
+                rect = pygame.Rect(frame * a.splitx, 0, a.splitx, a.image.get_height())
+                image = pygame.transform.scale(a.image.subsurface(rect), (int(s.width * s.scale), int(s.height * s.scale)))
+                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
 
 class ClickProcessor(esper.Processor):
     def __init__(self):
@@ -60,33 +76,74 @@ class PlayerProcessor(esper.Processor):
     def process(self, filtered_events, pressed_keys, dt, screen):
         v = self.world.component_for_entity(self.player, components.Velocity)
         p = self.world.component_for_entity(self.player, components.Player)
+        s = self.world.component_for_entity(self.player, components.Size)
+        pos = self.world.component_for_entity(self.player, components.Position)
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     v.x -= 200
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     v.x += 200
-                elif event.key == pygame.K_UP and v.y == 0:
+                elif (event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE) and v.y == 0:
                     v.y -= 400
+                elif event.key == pygame.K_e:
+                    if p.holding:
+                        if self.world.has_component(self.player, components.Image):
+                            self.world.remove_component(self.player, components.Image)
+                            self.world.add_component(self.player, p.image)
+                        elif self.world.has_component(self.player, components.Animation):
+                            self.world.remove_component(self.player, components.Animation)
+                            self.world.add_component(self.player, p.animation)
+                        i = self.world.component_for_entity(p.holding, components.Image)
+                        i.image = pygame.transform.rotate(i.image, -90)
+                        self.world.add_component(p.holding, components.Velocity(0,0))
+                        p.holding = None
+                    else:
+                        rect = pygame.Rect(pos.x, pos.y - s.height / 2, s.width * (1 if p.facing_right else -1), s.height)
+                        rect.normalize()
+                        for ent, (p2, i) in self.world.get_components(components.Position, components.Image):
+                            if self.world.has_component(ent, components.Player):
+                                continue
+                            if rect.collidepoint(p2.x, p2.y):
+                                p.holding = ent
+                                if self.world.has_component(self.player, components.Image):
+                                    self.world.remove_component(self.player, components.Image)
+                                    self.world.add_component(self.player, p.carry_image)
+                                elif self.world.has_component(self.player, components.Animation):
+                                    self.world.remove_component(self.player, components.Animation)
+                                    self.world.add_component(self.player, p.carry_animation)
+                                i.image = pygame.transform.rotate(i.image, 90)
+                                self.world.remove_component(ent, components.Velocity)
+
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     v.x += 200
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     v.x -= 200
             if v.x == 0 and self.world.has_component(self.player, components.Animation):
                 self.world.remove_component(self.player, components.Animation)
-                self.world.add_component(self.player, p.image)
-                if p.facing_right_anim is not p.facing_right_image:
-                    p.facing_right_image = p.facing_right_anim
-                    p.image.image = pygame.transform.flip(p.image.image, True, False)
+                if p.holding:
+                    self.world.add_component(self.player, p.carry_image)
+                else:
+                    self.world.add_component(self.player, p.image)
             elif v.x != 0 and self.world.has_component(self.player, components.Image):
                 self.world.remove_component(self.player, components.Image)
-                self.world.add_component(self.player, p.animation)
+                if p.holding:
+                    self.world.add_component(self.player, p.carry_animation)
+                else:
+                    self.world.add_component(self.player, p.animation)
 
-            if (p.facing_right_anim and v.x < 0) or (not p.facing_right_anim and v.x > 0):
-                p.facing_right_anim = not p.facing_right_anim
-                a = self.world.component_for_entity(self.player, components.Animation)
-                a.image = pygame.transform.flip(a.image, True, False)
+            if (p.facing_right and v.x < 0) or (not p.facing_right and v.x > 0):
+                p.facing_right = not p.facing_right
+                p.image.image = pygame.transform.flip(p.image.image, True, False)
+                p.animation.image = pygame.transform.flip(p.animation.image, True, False)
+                p.carry_image.image = pygame.transform.flip(p.carry_image.image, True, False)
+                p.carry_animation.image = pygame.transform.flip(p.carry_animation.image, True, False)
+
+        if p.holding:
+            p3 = self.world.component_for_entity(p.holding, components.Position)
+            p3.x = pos.x
+            p3.y = pos.y - s.height
 
 class VelocityProcessor(esper.Processor):
     def __init__(self):
@@ -108,6 +165,7 @@ class AnimationProcessor(esper.Processor):
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         to_remove = []
+        to_run = []
         # Position Animation
         for ent, (p, c) in self.world.get_components(components.Position, components.ChangePosition):
             if c.current is None:
@@ -120,7 +178,7 @@ class AnimationProcessor(esper.Processor):
                 x,y = c.target
                 to_remove.append((ent, components.ChangePosition))
                 if c.chain:
-                    c.chain(*c.args)
+                    to_run.append((c.chain, c.args))
             else:
                 x,y = c.target
                 ox, oy = c.original
@@ -142,7 +200,7 @@ class AnimationProcessor(esper.Processor):
                 scale = c.target
                 to_remove.append((ent, components.ChangeSize))
                 if c.chain:
-                    c.chain(*c.args)
+                    to_run.append((c.chain, c.args))
             else:
                 scale = c.target * c.interp.apply(c.current / c.time) + c.original * (1 - c.interp.apply(c.current / c.time))
 
@@ -160,7 +218,7 @@ class AnimationProcessor(esper.Processor):
                 x,y = c.target
                 to_remove.append((ent, components.ChangeVelocity))
                 if c.chain:
-                    c.chain(*c.args)
+                    to_run.append((c.chain, c.args))
             else:
                 x,y = c.target
                 ox, oy = c.original
@@ -182,7 +240,7 @@ class AnimationProcessor(esper.Processor):
                 alpha = a.target
                 to_remove.append((ent, components.ChangeAlpha))
                 if a.chain:
-                    a.chain(*a.args)
+                    to_run.append((a.chain, a.args))
             else:
                 alpha = a.target * a.interp.apply(a.current / a.time) + a.original * (1 - a.interp.apply(a.current / a.time))
 
@@ -199,7 +257,7 @@ class AnimationProcessor(esper.Processor):
                     to_remove.append((ent, components.Velocity))
                     to_remove.append((ent, components.CircleAnimation))
                 if c.chain:
-                    c.chain(*c.args)
+                    to_run.append((c.chain, c.args))
 
         # Delay Animation
         for ent, d in self.world.get_component(components.Delay):
@@ -207,8 +265,11 @@ class AnimationProcessor(esper.Processor):
             if d.time <= 0:
                 to_remove.append((ent, components.Delay))
                 if d.chain:
-                    d.chain(*d.args)
+                    to_run.append((d.chain, d.args))
 
         # Remove Components
         for (ent, comp) in to_remove:
             self.world.remove_component(ent, comp)
+
+        for (chain, args) in to_run:
+            chain(*args)
