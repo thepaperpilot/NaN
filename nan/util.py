@@ -41,3 +41,13 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
         text = text[i:]
  
     return text
+
+# source: http://www.nerdparadise.com/tech/python/pygame/blitopacity/
+def blit_alpha(target, source, location, opacity, blend):
+    x = location[0]
+    y = location[1]
+    temp = pygame.Surface((source.get_width(), source.get_height())).convert()
+    temp.blit(target, (-x, -y))
+    temp.blit(source, (0, 0))
+    temp.set_alpha(opacity)      
+    target.blit(temp, location, special_flags=blend)

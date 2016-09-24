@@ -18,7 +18,7 @@ class TitleScene(scenebase.SceneBase):
             for ent in [start, quitbutton, title]:
                 pos = self.world.component_for_entity(ent, components.Position)
                 self.world.add_component(ent, components.ChangePosition((pos.x, pos.y + 100), .25))
-                self.world.add_component(ent, components.ChangeAlpha(1, 0, .25))
+                self.world.add_component(ent, components.ChangeAlpha(0, .25))
             def change_scene():
                 self.switch_to_scene(text.TextScene("This is the story of an adventurer named NaN, known across the land for his unwavering enthusiasm for helping anyone with anything. 3 years ago he even protected his hometown from a vicious wandering dragon...", game.SceneOne()))
             next_scene = self.world.create_entity()
