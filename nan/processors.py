@@ -119,7 +119,7 @@ class PlayerProcessor(esper.Processor):
                     else:
                         rect = pygame.Rect(pos.x, pos.y - s.height * s.scale / 2, s.width * s.scale * (1 if p.facing_right else -1), s.height * s.scale)
                         rect.normalize()
-                        for ent, (p2, i) in self.world.get_components(components.Position, components.Image):
+                        for ent, (p2, i, v) in self.world.get_components(components.Position, components.Image, components.Velocity):
                             if self.world.has_component(ent, components.Player):
                                 continue
                             if rect.collidepoint(p2.x, p2.y):
@@ -222,14 +222,12 @@ class PhysicsProcessor(esper.Processor):
             else:
                 t.active = False
 
-        #Platform Physics
-        for platEnt, (c, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
+        for platEnt, (tl, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
             for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
-                if not self.world.has_component(ent, components.Platform):
-                    if c.x - box.width/2 < p.x < c.x + box.width/2 and c.y + box.height/2 < p.y < c.y - box.height/2 :
-                        if c.x - 20 < p.x < c.x + 20 and c.y + 20 < p.y < c.y - 20 :
-                            p.y = min(c.y - box.height, p.y)
-                            v.y = min(0, v.y)
+                if (tl.x - box.width / 2) < p.x < (tl.x + box.width / 2) and (tl.y - box.height) < p.y < tl.y:
+                    if v.y > 0:
+                        p.y = min((tl.y - box.height), p.y)
+                    v.y = min(0, v.y)
 
 class AnimationProcessor(esper.Processor):
     def __init__(self):

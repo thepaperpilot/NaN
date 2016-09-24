@@ -127,7 +127,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(plat, components.Position(500, 500))
         self.world.add_component(plat, components.Platform())
         self.world.add_component(plat, components.Image("sword.png"))
-        self.world.add_component(plat, components.Size(160, 80))
+        self.world.add_component(plat, components.Size(160, 100))
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
