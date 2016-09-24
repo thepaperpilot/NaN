@@ -155,13 +155,6 @@ class SceneTwo(scenebase.SceneBase):
             for ent, a in self.world.get_component(components.Animation):
                 self.world.add_component(ent, components.ChangeAlpha(0, 1))
 
-        dragon = self.world.create_entity()
-        self.world.add_component(dragon, components.Position(1000, 500))
-        self.world.add_component(dragon, components.Velocity(0, 0))
-        self.world.add_component(dragon, components.Animation("dragon.png", splitx=640, frame=0))
-        self.world.add_component(dragon, components.Size(640, 640))
-        self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(320, 0, -320, 0)))
-
         self.world.add_processor(processors.RenderProcessor())
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
