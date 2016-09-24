@@ -157,3 +157,7 @@ class Delay:
         self.time = time
         self.chain = chain
         self.args = args
+
+class Platform:
+    def __init__(self):
+        pass

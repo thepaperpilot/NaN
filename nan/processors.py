@@ -222,6 +222,15 @@ class PhysicsProcessor(esper.Processor):
             else:
                 t.active = False
 
+        #Platform Physics
+        for platEnt, (c, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
+            for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
+                if not self.world.has_component(ent, components.Platform):
+                    if c.x - box.width/2 < p.x < c.x + box.width/2 and c.y + box.height/2 < p.y < c.y - box.height/2 :
+                        if c.x - 20 < p.x < c.x + 20 and c.y + 20 < p.y < c.y - 20 :
+                            p.y = min(c.y - box.height, p.y)
+                            v.y = min(0, v.y)
+
 class AnimationProcessor(esper.Processor):
     def __init__(self):
         esper.Processor.__init__(self)
@@ -412,7 +421,4 @@ class Scene2Processor(esper.Processor):
         self.player = player
 
     def process(self, filtered_events, pressed_keys, dt, screen):
-        for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
-            if 0 < p.x < 500 and 500 < p.y < 510 :
-                p.y = min(500, p.y)
-                v.y = min(0, v.y)
+        pass
