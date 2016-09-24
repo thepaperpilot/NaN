@@ -13,11 +13,11 @@ class SceneOne(scenebase.SceneBase):
     def init(self):
         self.font = pygame.font.Font("RobotoMono-Regular.ttf", 42)
 
-        # bg = self.world.create_entity()
-        # self.world.add_component(bg, components.Position(640, 360))
-        # self.world.add_component(bg, components.Image("bg.png"))
-        # self.world.add_component(bg, components.Size(1280, 720))
-        # self.world.add_component(bg, components.Background())
+        bg = self.world.create_entity()
+        self.world.add_component(bg, components.Position(640, 360))
+        self.world.add_component(bg, components.Image("IntroBG.png"))
+        self.world.add_component(bg, components.Size(1280, 720))
+        self.world.add_component(bg, components.Background())
 
         player = self.world.create_entity()
         image = components.Image("playerIdle.png")
@@ -47,12 +47,14 @@ class SceneOne(scenebase.SceneBase):
             self.world.add_component(damage, components.Image(image=image))
             self.world.add_component(damage, components.Size(image.get_width(), image.get_height()))
             self.world.add_component(damage, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(damage, components.ChangeAlpha(1, 0, 2))
+            self.world.add_component(damage, components.ChangeAlpha(0, 2))
             self.world.add_component(damage, components.Delay(3, next_scene))
 
         def fade_out():
             for ent in [bg, player, sword, dragon, tutorial]:
-                self.world.add_component(ent, components.ChangeAlpha(1, 0, 1))
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
+            for ent in clouds:
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
 
         dragon = self.world.create_entity()
         self.world.add_component(dragon, components.Position(1000, 500))
@@ -74,8 +76,10 @@ class SceneOne(scenebase.SceneBase):
         self.world.add_component(tutorial, components.Size(image.get_width(), image.get_height()))
         move_up(tutorial)
 
+        clouds = []
         for i in [1,2,3,4,5,6]:
             cloud = self.world.create_entity()
+            clouds.append(cloud)
             self.world.add_component(cloud, components.Position(random.randrange(100, 1180), random.randrange(75, 200)))
             #self.world.add_component(cloud, components.Image("cloud.png", blend=pygame.BLEND_RGBA_MAX))
             self.world.add_component(cloud, components.Image("cloud.png"))

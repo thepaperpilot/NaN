@@ -2,58 +2,57 @@ import pygame
 import esper
 import components
 import math
-import game
+import util
 
 # TODO clean up, abstract, w/e
 class RenderProcessor(esper.Processor):
     def __init__(self):
         esper.Processor.__init__(self)
 
-    def process(self, filtered_events, pressed_keys, dt, screen):
-        screen.fill((0, 64, 0))
-        for ent, (b, p, s) in self.world.get_components(components.Background, components.Position, components.Size):
-            if self.world.has_component(ent, components.Image):
-                i = self.world.component_for_entity(ent, components.Image)
-                image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
-                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
-            elif self.world.has_component(ent, components.Animation):
-                a = self.world.component_for_entity(ent, components.Animation)
-                a.time += dt
-                frame = (a.time // a.framelength) % a.maxframes
-                rect = pygame.Rect(frame * a.splitx, 0, a.splitx, a.image.get_height())
-                image = pygame.transform.scale(a.image.subsurface(rect), (int(s.width * s.scale), int(s.height * s.scale)))
-                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
-        for ent, (a, p, s) in self.world.get_components(components.Animation, components.Position, components.Size):
-            if self.world.has_component(ent, components.Player) or self.world.has_component(ent, components.Background):
-                continue
+    def render(self, ent, p, s, dt, screen):
+        if self.world.has_component(ent, components.Image):
+            i = self.world.component_for_entity(ent, components.Image)
+            image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
+            self.render_image(image, p, s, i.alpha, i.blend, screen)
+        elif self.world.has_component(ent, components.Animation):
+            a = self.world.component_for_entity(ent, components.Animation)
             a.time += dt
             frame = (a.time // a.framelength) % a.maxframes
             if a.framelength == -1:
                 frame = a.frame
             rect = pygame.Rect(frame * a.splitx, 0, a.splitx, a.image.get_height())
             image = pygame.transform.scale(a.image.subsurface(rect), (int(s.width * s.scale), int(s.height * s.scale)))
-            screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
+            self.render_image(image, p, s, a.alpha, a.blend, screen)
+
+    def render_image(self, image, p, s, alpha, blend, screen):
+        if alpha == 255:
+            screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=blend)
+        else:
+            util.blit_alpha(screen, image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), alpha, blend)
+
+    def process(self, filtered_events, pressed_keys, dt, screen):
+        screen.fill((0, 64, 0))
+        for ent, (b, p, s) in self.world.get_components(components.Background, components.Position, components.Size):
+            self.render(ent, p, s, dt, screen)
+            
+        for ent, (a, p, s) in self.world.get_components(components.Animation, components.Position, components.Size):
+            if self.world.has_component(ent, components.Player) or self.world.has_component(ent, components.Background):
+                continue
+            self.render(ent, p, s, dt, screen)
+
         for ent, (i, p, s) in self.world.get_components(components.Image, components.Position, components.Size):
             if self.world.has_component(ent, components.Player) or self.world.has_component(ent, components.Background):
                 continue
-            image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
-            screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
+            self.render(ent, p, s, dt, screen)
+
         for ent, (c, p) in self.world.get_components(components.Circle, components.Position):
             pygame.draw.circle(screen, c.color, (int(p.x), int(p.y)), c.radius, c.width)
+
         for ent, (r, p) in self.world.get_components(components.Rect, components.Position):
             pygame.draw.rect(screen, r.color, r.rect)
+
         for ent, (pl, p, s) in self.world.get_components(components.Player, components.Position, components.Size):
-            if self.world.has_component(ent, components.Image):
-                i = self.world.component_for_entity(ent, components.Image)
-                image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
-                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
-            elif self.world.has_component(ent, components.Animation):
-                a = self.world.component_for_entity(ent, components.Animation)
-                a.time += dt
-                frame = (a.time // a.framelength) % a.maxframes
-                rect = pygame.Rect(frame * a.splitx, 0, a.splitx, a.image.get_height())
-                image = pygame.transform.scale(a.image.subsurface(rect), (int(s.width * s.scale), int(s.height * s.scale)))
-                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
+            self.render(ent, p, s, dt, screen)
 
 class InputProcessor(esper.Processor):
     def __init__(self):
@@ -277,7 +276,10 @@ class AnimationProcessor(esper.Processor):
         for ent, a in self.world.get_component(components.ChangeAlpha):
             if not a.current:
                 a.current = dt
-                a.original = a.start
+                if self.world.has_component(ent, components.Image):
+                    a.original = self.world.component_for_entity(ent, components.Image).alpha / 255
+                elif self.world.has_component(ent, components.Animation):
+                    a.original = self.world.component_for_entity(ent, components.Animation).alpha / 255
             else:
                 a.current += dt
 
@@ -290,9 +292,9 @@ class AnimationProcessor(esper.Processor):
                 alpha = a.target * a.interp.apply(a.current / a.time) + a.original * (1 - a.interp.apply(a.current / a.time))
 
             if self.world.has_component(ent, components.Image):
-                self.world.component_for_entity(ent, components.Image).image.set_alpha(alpha * 255)
+                self.world.component_for_entity(ent, components.Image).alpha = alpha * 255
             elif self.world.has_component(ent, components.Animation):
-                self.world.component_for_entity(ent, components.Animation).image.set_alpha(alpha * 255)
+                self.world.component_for_entity(ent, components.Animation).alpha = alpha * 255
 
         # Circle Animation
         for ent, (v, c) in self.world.get_components(components.Velocity, components.CircleAnimation):
@@ -332,16 +334,6 @@ class AnimationProcessor(esper.Processor):
         for (chain, args) in to_run:
             chain(*args)
 
-class IntroProcessor(esper.Processor):
-    def __init__(self, scene):
-        esper.Processor.__init__(self)
-        self.scene = scene
-
-    def process(self, filtered_events, pressed_keys, dt, screen):
-        for event in filtered_events:
-            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                self.scene.switch_to_scene(game.SceneOne())
-
 class TitleProcessor(esper.Processor):
     x = 0
     y = 0
@@ -362,15 +354,15 @@ class TitleProcessor(esper.Processor):
                 p.y = self.y + (self.y - mousey) / 10
 
 class TextProcessor(esper.Processor):
-    def __init__(self, scene, to_scene):
+    def __init__(self, callback):
         esper.Processor.__init__(self)
-        self.scene = scene
-        self.to_scene = to_scene
+        self.callback = callback
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         for event in filtered_events:
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                self.scene.switch_to_scene(self.to_scene)
+                self.callback()
+                
 
 class Scene1Processor(esper.Processor):
     def __init__(self, player, tutorial, font):
@@ -381,8 +373,8 @@ class Scene1Processor(esper.Processor):
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         p = self.world.component_for_entity(self.player, components.Position)
-        if p.x > 720:
-            p.x = 720
+        if p.x > 920:
+            p.x = 920
 
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:

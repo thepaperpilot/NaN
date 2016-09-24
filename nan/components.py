@@ -34,17 +34,18 @@ class Background: # Just an identifier component, because I can't/don't know how
         pass
 
 class Image:
-    def __init__(self, file=None, image=None, blend=0):
+    def __init__(self, file=None, image=None, blend=0, alpha=255):
         if file:
             self.image = pygame.image.load(os.path.join('images', file))
         else:
             self.image = image
         self.blend = blend
+        self.alpha = alpha
 
 class Animation:
     time = 0
 
-    def __init__(self, file=None, image=None, splitx=0, framelength=-1, frame=0):
+    def __init__(self, file=None, image=None, splitx=0, framelength=-1, frame=0, blend=0, alpha=255):
         if file:
             self.image = pygame.image.load(os.path.join('images', file))
         else:
@@ -53,6 +54,8 @@ class Animation:
         self.framelength=framelength
         self.maxframes=self.image.get_width()/splitx
         self.frame = frame
+        self.blend = blend
+        self.alpha = alpha
 
 class Click:
     def __init__(self, run=None):
@@ -131,9 +134,8 @@ class ChangeVelocity:
 class ChangeAlpha:
     current = None
 
-    def __init__(self, start=0, end=0, time=0, interp=interpolation.InterpolationBase(), chain=None, *args):
-        self.target = end
-        self.start = start
+    def __init__(self, target=0, time=0, interp=interpolation.InterpolationBase(), chain=None, *args):
+        self.target = target
         self.time = time
         self.interp = interp
         self.chain = chain
