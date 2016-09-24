@@ -5,7 +5,7 @@ import esper
 import components
 import processors
 import interpolation
-import game
+import intro
 
 class TitleScene(scenebase.SceneBase):
     def __init__(self):
@@ -18,12 +18,12 @@ class TitleScene(scenebase.SceneBase):
         def start_game():
             for ent in [start, quitbutton, title]:
                 pos = self.world.component_for_entity(ent, components.Position)
-                self.world.add_component(ent, components.ChangePosition((pos.x, pos.y + 100), 1))
-                self.world.add_component(ent, components.ChangeAlpha(1, 0, 1))
+                self.world.add_component(ent, components.ChangePosition((pos.x, pos.y + 100), .25))
+                self.world.add_component(ent, components.ChangeAlpha(1, 0, .25))
             def change_scene():
-                self.switch_to_scene(game.GameScene())
+                self.switch_to_scene(intro.IntroScene())
             next_scene = self.world.create_entity()
-            self.world.add_component(next_scene, components.Delay(2, change_scene))
+            self.world.add_component(next_scene, components.Delay(.5, change_scene))
 
         def quit_game():
             self.terminate()
@@ -71,8 +71,7 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_component(title, components.Image(image=image))
         self.world.add_component(title, components.Size(image.get_width(), image.get_height()))
 
-        self.world.add_processor(processors.ClickProcessor(), priority=10)
         self.world.add_processor(processors.RenderProcessor())
-        self.world.add_processor(processors.OverProcessor(), priority=10)
-        self.world.add_processor(processors.VelocityProcessor(), priority=5)
+        self.world.add_processor(processors.InputProcessor(), priority=10)
+        self.world.add_processor(processors.PhysicsProcessor(), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)

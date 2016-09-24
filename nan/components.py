@@ -29,6 +29,10 @@ class Text:
         self.font = font
         self.color = color
 
+class Background: # Just an identifier component, because I can't/don't know how to sort the get_components generator
+    def __init__(self):
+        pass
+
 class Image:
     def __init__(self, file=None, image=None, blend=0):
         if file:
@@ -40,7 +44,7 @@ class Image:
 class Animation:
     time = 0
 
-    def __init__(self, file=None, image=None, splitx=0, framelength=0):
+    def __init__(self, file=None, image=None, splitx=0, framelength=-1, frame=0):
         if file:
             self.image = pygame.image.load(os.path.join('images', file))
         else:
@@ -48,6 +52,7 @@ class Animation:
         self.splitx=splitx
         self.framelength=framelength
         self.maxframes=self.image.get_width()/splitx
+        self.frame = frame
 
 class Click:
     def __init__(self, run=None):
@@ -59,6 +64,14 @@ class Over:
     def __init__(self, enterf=None, exitf=None):
         self.enterf = enterf
         self.exitf = exitf
+
+class Touch:
+    active = False
+
+    def __init__(self, target=None, touch=None, multi=False):
+        self.target = target
+        self.touch = touch
+        self.multi = multi
 
 class Circle:
     def __init__(self, color=(0,128,0), radius=0.0, width=0):
@@ -76,6 +89,14 @@ class Velocity:
     def __init__(self, x=0.0, y=0.0):
         self.x = x
         self.y = y
+
+class RotationalVelocity:
+    angle = 0
+    image = None
+    scale = 0
+
+    def __init__(self, speed=0):
+        self.speed = speed
 
 class ChangePosition:
     current = None

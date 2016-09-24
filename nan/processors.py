@@ -2,26 +2,42 @@ import pygame
 import esper
 import components
 import math
+import game
 
+# TODO clean up, abstract, w/e
 class RenderProcessor(esper.Processor):
     def __init__(self):
         esper.Processor.__init__(self)
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         screen.fill((0, 0, 0))
-        for ent, (i, p, s) in self.world.get_components(components.Image, components.Position, components.Size):
-            if self.world.has_component(ent, components.Player):
-                continue
-            image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
-            screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
+        for ent, (b, p, s) in self.world.get_components(components.Background, components.Position, components.Size):
+            if self.world.has_component(ent, components.Image):
+                i = self.world.component_for_entity(ent, components.Image)
+                image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
+                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
+            elif self.world.has_component(ent, components.Animation):
+                a = self.world.component_for_entity(ent, components.Animation)
+                a.time += dt
+                frame = (a.time // a.framelength) % a.maxframes
+                rect = pygame.Rect(frame * a.splitx, 0, a.splitx, a.image.get_height())
+                image = pygame.transform.scale(a.image.subsurface(rect), (int(s.width * s.scale), int(s.height * s.scale)))
+                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
         for ent, (a, p, s) in self.world.get_components(components.Animation, components.Position, components.Size):
-            if self.world.has_component(ent, components.Player):
+            if self.world.has_component(ent, components.Player) or self.world.has_component(ent, components.Background):
                 continue
             a.time += dt
             frame = (a.time // a.framelength) % a.maxframes
+            if a.framelength == -1:
+                frame = a.frame
             rect = pygame.Rect(frame * a.splitx, 0, a.splitx, a.image.get_height())
             image = pygame.transform.scale(a.image.subsurface(rect), (int(s.width * s.scale), int(s.height * s.scale)))
             screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
+        for ent, (i, p, s) in self.world.get_components(components.Image, components.Position, components.Size):
+            if self.world.has_component(ent, components.Player) or self.world.has_component(ent, components.Background):
+                continue
+            image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
+            screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
         for ent, (c, p) in self.world.get_components(components.Circle, components.Position):
             pygame.draw.circle(screen, c.color, (int(p.x), int(p.y)), c.radius, c.width)
         for ent, (r, p) in self.world.get_components(components.Rect, components.Position):
@@ -39,19 +55,7 @@ class RenderProcessor(esper.Processor):
                 image = pygame.transform.scale(a.image.subsurface(rect), (int(s.width * s.scale), int(s.height * s.scale)))
                 screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
 
-class ClickProcessor(esper.Processor):
-    def __init__(self):
-        esper.Processor.__init__(self)
-
-    def process(self, filtered_events, pressed_keys, dt, screen):
-        for event in filtered_events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-                for ent, (s, p, c) in self.world.get_components(components.Size, components.Position, components.Click):
-                    if p.x - s.width // 2 <= x and p.x + s.width // 2 >= x and p.y - s.height // 2 <= y and p.y + s.height // 2 >= y:
-                        c.run()
-
-class OverProcessor(esper.Processor):
+class InputProcessor(esper.Processor):
     def __init__(self):
         esper.Processor.__init__(self)
 
@@ -60,18 +64,25 @@ class OverProcessor(esper.Processor):
             if event.type == pygame.MOUSEMOTION:
                 x, y = pygame.mouse.get_pos()
                 for ent, (s, p, o) in self.world.get_components(components.Size, components.Position, components.Over):
-                    if p.x - s.width // 2 <= x and p.x + s.width // 2 >= x and p.y - s.height // 2 <= y and p.y + s.height // 2 >= y:
+                    if p.x - s.width * s.scale // 2 <= x and p.x + s.width * s.scale // 2 >= x and p.y - s.height * s.scale / 2 <= y and p.y + s.height * s.scale // 2 >= y:
                         if not o.active:
                             o.enterf(ent)
                             o.active = True
                     elif o.active:
                         o.exitf(ent)
                         o.active = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                for ent, (s, p, c) in self.world.get_components(components.Size, components.Position, components.Click):
+                    if p.x - s.width * s.scale // 2 <= x and p.x + s.width * s.scale // 2 >= x and p.y - s.height // 2 <= y and p.y + s.height // 2 >= y:
+                        c.run()
 
 class PlayerProcessor(esper.Processor):
-    def __init__(self, player):
+    def __init__(self, player, tutorial=None, font=None):
         esper.Processor.__init__(self)
         self.player = player
+        self.tutorial = tutorial
+        self.font = font
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         v = self.world.component_for_entity(self.player, components.Velocity)
@@ -81,11 +92,11 @@ class PlayerProcessor(esper.Processor):
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    v.x -= 200
+                    v.x -= 300
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    v.x += 200
+                    v.x += 300
                 elif (event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE) and v.y == 0:
-                    v.y -= 400
+                    v.y -= 600
                 elif event.key == pygame.K_e:
                     if p.holding:
                         if self.world.has_component(self.player, components.Image):
@@ -99,7 +110,7 @@ class PlayerProcessor(esper.Processor):
                         self.world.add_component(p.holding, components.Velocity(0,0))
                         p.holding = None
                     else:
-                        rect = pygame.Rect(pos.x, pos.y - s.height / 2, s.width * (1 if p.facing_right else -1), s.height)
+                        rect = pygame.Rect(pos.x, pos.y - s.height * s.scale / 2, s.width * s.scale * (1 if p.facing_right else -1), s.height * s.scale)
                         rect.normalize()
                         for ent, (p2, i) in self.world.get_components(components.Position, components.Image):
                             if self.world.has_component(ent, components.Player):
@@ -114,12 +125,31 @@ class PlayerProcessor(esper.Processor):
                                     self.world.add_component(self.player, p.carry_animation)
                                 i.image = pygame.transform.rotate(i.image, 90)
                                 self.world.remove_component(ent, components.Velocity)
-
+                        if self.tutorial:
+                            image = self.font.render("aim your mouse and click to throw", False, (32, 255, 128))
+                            self.world.component_for_entity(self.tutorial, components.Image).image = image
+                            imgs = self.world.component_for_entity(self.tutorial, components.Size)
+                            imgs.width = image.get_width()
+                            imgs.height = image.get_height()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    v.x += 200
+                    v.x += 300
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    v.x -= 200
+                    v.x -= 300
+            elif event.type == pygame.MOUSEBUTTONDOWN and p.holding:
+                if self.world.has_component(self.player, components.Image):
+                            self.world.remove_component(self.player, components.Image)
+                            self.world.add_component(self.player, p.image)
+                elif self.world.has_component(self.player, components.Animation):
+                    self.world.remove_component(self.player, components.Animation)
+                    self.world.add_component(self.player, p.animation)
+                i = self.world.component_for_entity(p.holding, components.Image)
+                i.image = pygame.transform.rotate(i.image, -90)
+                angle = math.atan2(event.pos[1] - pos.y, event.pos[0] - pos.x) % (2 * math.pi)
+                self.world.add_component(p.holding, components.Velocity(math.cos(angle)*1600, math.sin(angle)*1200))
+                self.world.add_component(p.holding, components.RotationalVelocity(320))
+                p.holding = None
+
             if v.x == 0 and self.world.has_component(self.player, components.Animation):
                 self.world.remove_component(self.player, components.Animation)
                 if p.holding:
@@ -145,19 +175,41 @@ class PlayerProcessor(esper.Processor):
             p3.x = pos.x
             p3.y = pos.y - s.height
 
-class VelocityProcessor(esper.Processor):
+class PhysicsProcessor(esper.Processor):
     def __init__(self):
         esper.Processor.__init__(self)
 
     def process(self, filtered_events, pressed_keys, dt, screen):
-        for ent, (p, v) in self.world.get_components(components.Position, components.Velocity):
+        for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
             v.y = min(v.y + 9.81*100*dt, 53*100) # terminal velocity
+            if not self.world.has_component(ent, components.Player):
+                v.x *= .98
 
             p.x = max(min(p.x + v.x * dt, 1280), 0)
-            p.y = min(p.y + v.y * dt, 600)
+            p.y = min(p.y + v.y * dt, 600 - s.height * s.scale / 2)
 
-            if p.y >= 600 and v.y > 0:
+            if p.y >= 600 - s.height * s.scale / 2 and v.y > 0:
                 v.y = 0
+
+            if p.y >= 600 - s.height * s.scale / 2 and self.world.has_component(ent, components.RotationalVelocity):
+                r = self.world.component_for_entity(ent, components.RotationalVelocity)
+                i = self.world.component_for_entity(ent, components.Image)
+                i.image = r.image
+                s.scale = r.scale
+                self.world.remove_component(ent, components.RotationalVelocity)
+        for ent, (t, p, s)  in self.world.get_components(components.Touch, components.Position, components.Size):
+            rect = pygame.Rect(p.x, p.y, s.width, s.height)
+            tp = self.world.component_for_entity(t.target, components.Position)
+            ts = self.world.component_for_entity(t.target, components.Size)
+            if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
+                if not t.active:
+                    t.touch()
+                    if t.multi:
+                        t.active = True
+                    else:
+                        self.world.remove_component(ent, components.Touch)
+            else:
+                t.active = False
 
 class AnimationProcessor(esper.Processor):
     def __init__(self):
@@ -259,6 +311,16 @@ class AnimationProcessor(esper.Processor):
                 if c.chain:
                     to_run.append((c.chain, c.args))
 
+        # Rotational Velocity
+        for ent, (i, r, s) in self.world.get_components(components.Image, components.RotationalVelocity, components.Size):
+            if not r.image:
+                r.image = i.image
+                r.scale = s.scale
+            width = i.image.get_width()
+            r.angle += dt * r.speed
+            i.image = pygame.transform.rotate(r.image, r.angle)
+            s.scale *= i.image.get_width() / width
+
         # Delay Animation
         for ent, d in self.world.get_component(components.Delay):
             d.time -= dt
@@ -273,3 +335,13 @@ class AnimationProcessor(esper.Processor):
 
         for (chain, args) in to_run:
             chain(*args)
+
+class IntroProcessor(esper.Processor):
+    def __init__(self, scene):
+        esper.Processor.__init__(self)
+        self.scene = scene
+
+    def process(self, filtered_events, pressed_keys, dt, screen):
+        for event in filtered_events:
+            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                self.scene.switch_to_scene(game.GameScene())
