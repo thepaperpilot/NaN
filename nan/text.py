@@ -12,19 +12,19 @@ class TextScene(scenebase.SceneBase):
         self.scene = scene
 
     def init(self):
-        self.font = pygame.font.Font("RobotoMono-Regular.ttf", 42)
+        self.font = pygame.font.Font("kenpixel.ttf", 42)
 
         text = self.world.create_entity()
         image = pygame.Surface([1280,720], pygame.SRCALPHA, 32).convert_alpha()
         util.drawText(image, self.text, (255, 255, 255), pygame.Rect(100, 100, 1080, 520), self.font)
         self.world.add_component(text, components.Position(640, 320))
-        self.world.add_component(text, components.Image(image=image))
+        self.world.add_component(text, components.Image(image=image, alpha=0))
         self.world.add_component(text, components.Size(image.get_width(), image.get_height()))
         self.world.add_component(text, components.ChangePosition((640, 420), .5))
         self.world.add_component(text, components.ChangeAlpha(1, 1))
 
         def fade_out(entity):
-            self.world.add_component(entity, components.ChangeAlpha(0, 1, interpolation.Circle(), fade_in, entity))
+            self.world.add_component(entity, components.ChangeAlpha(.5, 1, interpolation.Circle(), fade_in, entity))
 
         def fade_in(entity):
             self.world.add_component(entity, components.ChangeAlpha(1, 1, interpolation.Circle(), fade_out, entity))
@@ -41,8 +41,9 @@ class TextScene(scenebase.SceneBase):
                 if self.world.has_component(ent, components.ChangeAlpha):
                     self.world.remove_component(ent, components.ChangeAlpha)
                 self.world.add_component(ent, components.ChangeAlpha(0, .5))
+                self.world.add_component(ent, components.ChangePosition((640, self.world.component_for_entity(ent, components.Position).y + 50), .5))
 
-            self.world.add_component(text, components.Delay(.5, next_scene))
+            self.world.add_component(text, components.Delay(1, next_scene))
 
         def next_scene():
             self.switch_to_scene(self.scene)
