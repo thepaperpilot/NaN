@@ -123,11 +123,18 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(sword, components.Image("sword.png"))
         self.world.add_component(sword, components.Size(80, 80))
 
-        plat = self.world.create_entity()
-        self.world.add_component(plat, components.Position(500, 500))
-        self.world.add_component(plat, components.Platform())
-        self.world.add_component(plat, components.Image("sword.png"))
-        self.world.add_component(plat, components.Size(160, 100))
+        floor2 = self.world.create_entity()
+        self.world.add_component(floor2, components.Position(520, 380))
+        self.world.add_component(floor2, components.Platform())
+        self.world.add_component(floor2, components.Image("WoodPlatform3.png"))
+        self.world.add_component(floor2, components.Size(720, 40))
+
+        stair = self.world.create_entity()
+        self.world.add_component(stair, components.Position(1000, 500))
+        self.world.add_component(stair, components.Platform())
+        self.world.add_component(stair, components.Image("WoodPlatform1.png"))
+        self.world.add_component(stair, components.Size(240, 40))
+
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
@@ -153,7 +160,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(dragon, components.Position(1000, 500))
         self.world.add_component(dragon, components.Velocity(0, 0))
         self.world.add_component(dragon, components.Animation("dragon.png", splitx=64, frame=0))
-        self.world.add_component(dragon, components.Size(640, 640))
+        self.world.add_component(dragon, components.Size(64, 64))
         self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(320, 0, -320, 0)))
 
         self.world.add_processor(processors.RenderProcessor())
