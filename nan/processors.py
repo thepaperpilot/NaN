@@ -407,20 +407,12 @@ class Scene1Processor(esper.Processor):
                     imgs.height = image.get_height()
 
 class Scene2Processor(esper.Processor):
-    def __init__(self, player, tutorial, font):
+    def __init__(self, player):
         esper.Processor.__init__(self)
         self.player = player
-        self.tutorial = tutorial
-        self.font = font
 
     def process(self, filtered_events, pressed_keys, dt, screen):
-        for ent, (p, v) in self.world.get_components(components.Position, components.Velocity):
+        for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
             if 0 < p.x < 500 and 500 < p.y < 510 :
-                p.y = 500
-                v.y = 0
-
-
-    #    p = self.world.component_for_entity(self.player, components.Position)
-    #    if 0 < p.x < 500 and 500 < p.y < 525 :
-    #        p.y = 500
-    #        self.world.component_for_entity(self.player, components.Velocity).y = 0
+                p.y = min(500, p.y)
+                v.y = min(0, v.y)

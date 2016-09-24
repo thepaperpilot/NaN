@@ -16,7 +16,7 @@ python setup.py py2exe
 
 > note that you may need to use "python3" if your default is python2.7
 
-> note that currently the setup script doesn't copy over the non python files correctly, so you'll need to manually move over the font file and images folder
+> note that currently the setup script doesn't copy over the non python files correctly, so you'll need to manually move over the font file and images folder. Also its in the wrong folder and ugh I'm just glad it can be used at all
 
 ## Story
 

@@ -138,9 +138,7 @@ class SceneTwo(scenebase.SceneBase):
             self.world.add_component(damage, components.Delay(3, next_scene))
 
         def fade_out():
-            for ent in [bg, player, sword, dragon, tutorial]:
-                self.world.add_component(ent, components.ChangeAlpha(0, 1))
-            for ent in clouds:
+            for ent in [bg, player, sword, dragon]:
                 self.world.add_component(ent, components.ChangeAlpha(0, 1))
 
         dragon = self.world.create_entity()
@@ -155,4 +153,4 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
         self.world.add_processor(processors.PlayerProcessor(player, 100), priority=25)
-        self.world.add_processor(processors.Scene2Processor(player, tutorial, self.font), priority=20)
+        self.world.add_processor(processors.Scene2Processor(player), priority=30)
