@@ -10,15 +10,18 @@ class RenderProcessor(esper.Processor):
     def process(self, filtered_events, pressed_keys, dt, screen):
         screen.fill((0, 0, 0))
         for ent, (i, p, s) in self.world.get_components(components.Image, components.Position, components.Size):
-            if s.scale is 1:
-                screen.blit(i.image, (p.x - s.width // 2, p.y - s.height // 2), special_flags=i.blend)
-            else:
-                image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
-                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
+            image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
+            screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
+        for ent, (a, p, s) in self.world.get_components(components.Animation, components.Position, components.Size):
+            a.time += dt
+            frame = (a.time // a.framelength) % a.maxframes
+            rect = pygame.Rect(frame * a.splitx, 0, a.splitx, a.image.get_height())
+            image = pygame.transform.scale(a.image.subsurface(rect), (int(s.width * s.scale), int(s.height * s.scale)))
+            screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
         for ent, (c, p) in self.world.get_components(components.Circle, components.Position):
             pygame.draw.circle(screen, c.color, (int(p.x), int(p.y)), c.radius, c.width)
         for ent, (r, p) in self.world.get_components(components.Rect, components.Position):
-            pygame.draw.rect(screen, c.color, r.rect)
+            pygame.draw.rect(screen, r.color, r.rect)
 
 class ClickProcessor(esper.Processor):
     def __init__(self):
@@ -56,25 +59,34 @@ class PlayerProcessor(esper.Processor):
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         v = self.world.component_for_entity(self.player, components.Velocity)
+        p = self.world.component_for_entity(self.player, components.Player)
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    v.x -= 100
+                    v.x -= 200
                 elif event.key == pygame.K_RIGHT:
-                    v.x += 100
+                    v.x += 200
                 elif event.key == pygame.K_UP:
-                    v.y -= 100
-                elif event.key == pygame.K_DOWN:
-                    v.y += 100
+                    v.y -= 400
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
-                    v.x += 100
+                    v.x += 200
                 elif event.key == pygame.K_RIGHT:
-                    v.x -= 100
-                elif event.key == pygame.K_UP:
-                    v.y += 100
-                elif event.key == pygame.K_DOWN:
-                    v.y -= 100
+                    v.x -= 200
+            if v.x == 0 and self.world.has_component(self.player, components.Animation):
+                self.world.remove_component(self.player, components.Animation)
+                self.world.add_component(self.player, p.image)
+                if p.facing_right_anim is not p.facing_right_image:
+                    p.facing_right_image = p.facing_right_anim
+                    p.image.image = pygame.transform.flip(p.image.image, True, False)
+            elif v.x != 0 and self.world.has_component(self.player, components.Image):
+                self.world.remove_component(self.player, components.Image)
+                self.world.add_component(self.player, p.animation)
+
+            if (p.facing_right_anim and v.x < 0) or (not p.facing_right_anim and v.x > 0):
+                p.facing_right_anim = not p.facing_right_anim
+                a = self.world.component_for_entity(self.player, components.Animation)
+                a.image = pygame.transform.flip(a.image, True, False)
 
 class VelocityProcessor(esper.Processor):
     def __init__(self):
@@ -82,7 +94,7 @@ class VelocityProcessor(esper.Processor):
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         for ent, (p, v) in self.world.get_components(components.Position, components.Velocity):
-            v.y = min(v.y + 9.81*10*dt, 53*10) # terminal velocity
+            v.y = min(v.y + 9.81*100*dt, 53*100) # terminal velocity
 
             p.x = max(min(p.x + v.x * dt, 1280), 0)
             p.y = min(p.y + v.y * dt, 600)

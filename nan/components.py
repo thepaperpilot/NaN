@@ -3,7 +3,12 @@ import interpolation
 import pygame
 
 class Player:
-    pass
+    facing_right_anim=True
+    facing_right_image=True
+
+    def __init__(self, image=None, animation=None):
+        self.image = image
+        self.animation = animation
 
 class Position:
     def __init__(self, x=0.0, y=0.0):
@@ -29,6 +34,18 @@ class Image:
         else:
             self.image = image
         self.blend = blend
+
+class Animation:
+    time = 0
+
+    def __init__(self, file=None, image=None, splitx=0, framelength=0):
+        if file:
+            self.image = pygame.image.load(os.path.join('images', file))
+        else:
+            self.image = image
+        self.splitx=splitx
+        self.framelength=framelength
+        self.maxframes=self.image.get_width()/splitx
 
 class Click:
     def __init__(self, run=None):

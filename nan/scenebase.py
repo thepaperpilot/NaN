@@ -1,9 +1,9 @@
 import esper
 
 class SceneBase:
-    world = esper.World()
 
     def __init__(self):
+        self.world = esper.World()
         self.next = self
 
     def init(self):

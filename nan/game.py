@@ -14,11 +14,13 @@ class GameScene(scenebase.SceneBase):
 
     def init(self):
         player = self.world.create_entity()
+        image = components.Image("playerIdle.png")
+        animation = components.Animation("playerSimple.png", splitx=8, framelength=.1)
         self.world.add_component(player, components.Position(100, 100))
         self.world.add_component(player, components.Velocity(0, 0))
-        self.world.add_component(player, components.Image("player.png"))
+        self.world.add_component(player, image)
         self.world.add_component(player, components.Size(64, 64))
-        self.world.add_component(player, components.Player())
+        self.world.add_component(player, components.Player(image, animation))
 
         for i in [1,2,3,4,5,6]:
             cloud = self.world.create_entity()
