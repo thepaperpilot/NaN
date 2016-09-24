@@ -187,6 +187,13 @@ class PhysicsProcessor(esper.Processor):
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
+            if v.y == 0 and self.world.has_component(ent, components.RotationalVelocity):
+                r = self.world.component_for_entity(ent, components.RotationalVelocity)
+                i = self.world.component_for_entity(ent, components.Image)
+                i.image = r.image
+                s.scale = r.scale
+                self.world.remove_component(ent, components.RotationalVelocity)
+
             v.y = min(v.y + 9.81*100*dt, 53*100) # terminal velocity
             if not self.world.has_component(ent, components.Player):
                 v.x *= .98
@@ -198,12 +205,6 @@ class PhysicsProcessor(esper.Processor):
                 if p.y >= self.ground - s.height * s.scale / 2 and v.y > 0:
                     v.y = 0
 
-                if p.y >= self.ground - s.height * s.scale / 2 and self.world.has_component(ent, components.RotationalVelocity):
-                    r = self.world.component_for_entity(ent, components.RotationalVelocity)
-                    i = self.world.component_for_entity(ent, components.Image)
-                    i.image = r.image
-                    s.scale = r.scale
-                    self.world.remove_component(ent, components.RotationalVelocity)
             else:
                 p.y -= v.y * dt
 

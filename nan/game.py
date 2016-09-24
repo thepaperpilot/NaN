@@ -127,12 +127,14 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(floor2, components.Platform())
         self.world.add_component(floor2, components.Image("WoodPlatform3.png"))
         self.world.add_component(floor2, components.Size(720, 40))
+        self.world.add_component(floor2, components.Background())
 
         stair = self.world.create_entity()
         self.world.add_component(stair, components.Position(1000, 500))
         self.world.add_component(stair, components.Platform())
         self.world.add_component(stair, components.Image("WoodPlatform1.png"))
         self.world.add_component(stair, components.Size(240, 40))
+        self.world.add_component(stair, components.Background())
 
 
         def next_scene():
