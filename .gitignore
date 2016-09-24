@@ -4,3 +4,4 @@ build/
 MANIFEST
 __pycache__/
 Thumbs.db
+build.bat

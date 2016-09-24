@@ -34,7 +34,7 @@ class RenderProcessor(esper.Processor):
         screen.fill((0, 64, 0))
         for ent, (b, p, s) in self.world.get_components(components.Background, components.Position, components.Size):
             self.render(ent, p, s, dt, screen)
-            
+
         for ent, (a, p, s) in self.world.get_components(components.Animation, components.Position, components.Size):
             if self.world.has_component(ent, components.Player) or self.world.has_component(ent, components.Background):
                 continue
@@ -373,7 +373,7 @@ class TextProcessor(esper.Processor):
         for event in filtered_events:
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 self.callback()
-                
+
 
 class Scene1Processor(esper.Processor):
     def __init__(self, player, tutorial, font):
@@ -386,6 +386,28 @@ class Scene1Processor(esper.Processor):
         p = self.world.component_for_entity(self.player, components.Position)
         if p.x > 920:
             p.x = 920
+
+        for event in filtered_events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    image = self.font.render("aim your mouse and click to throw", False, (32, 255, 128))
+                    self.world.component_for_entity(self.tutorial, components.Image).image = image
+                    imgs = self.world.component_for_entity(self.tutorial, components.Size)
+                    imgs.width = image.get_width()
+                    imgs.height = image.get_height()
+
+class Scene2Processor(esper.Processor):
+    def __init__(self, player, tutorial, font):
+        esper.Processor.__init__(self)
+        self.player = player
+        self.tutorial = tutorial
+        self.font = font
+
+    def process(self, filtered_events, pressed_keys, dt, screen):
+        p = self.world.component_for_entity(self.player, components.Position)
+        if 0 < p.x < 500 and 500 < p.y < 525 :
+            p.y = 500
+            self.world.component_for_entity(self.player, components.Velocity).y = 0
 
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
