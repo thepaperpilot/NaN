@@ -66,7 +66,7 @@ class PlayerProcessor(esper.Processor):
                     v.x -= 200
                 elif event.key == pygame.K_RIGHT:
                     v.x += 200
-                elif event.key == pygame.K_UP:
+                elif event.key == pygame.K_UP and v.y == 0:
                     v.y -= 400
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
