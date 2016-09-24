@@ -11,8 +11,8 @@ class TitleScene(scenebase.SceneBase):
         scenebase.SceneBase.__init__(self)
 
     def init(self):
-        self.font = pygame.font.Font("RobotoMono-Regular.ttf", 72)
-        self.titlefont = pygame.font.Font("RobotoMono-Regular.ttf", 144)
+        self.font = pygame.font.Font("kenpixel.ttf", 72)
+        self.titlefont = pygame.font.Font("kenpixel.ttf", 144)
 
         def start_game():
             for ent in [start, quitbutton, title]:

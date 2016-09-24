@@ -9,5 +9,5 @@ setup(
 	windows = [{'script': "nan/core.py"}],
 	options = {'py2exe': {'packages': ['esper', 'pygame']}},
 	packages = ['nan'],
-    package_data={'': ['*.png', 'RobotoMono-Regular.ttf', 'README.txt']},
+    package_data={'': ['*.png', 'kenpixel.ttf', 'README.txt']},
 )

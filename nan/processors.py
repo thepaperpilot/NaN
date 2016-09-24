@@ -31,7 +31,6 @@ class RenderProcessor(esper.Processor):
             util.blit_alpha(screen, image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), alpha, blend)
 
     def process(self, filtered_events, pressed_keys, dt, screen):
-        screen.fill((0, 64, 0))
         for ent, (b, p, s) in self.world.get_components(components.Background, components.Position, components.Size):
             self.render(ent, p, s, dt, screen)
 

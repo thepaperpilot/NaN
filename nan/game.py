@@ -11,7 +11,7 @@ class SceneOne(scenebase.SceneBase):
         scenebase.SceneBase.__init__(self)
 
     def init(self):
-        self.font = pygame.font.Font("RobotoMono-Regular.ttf", 42)
+        self.font = pygame.font.Font("kenpixel.ttf", 42)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -21,9 +21,9 @@ class SceneOne(scenebase.SceneBase):
 
         player = self.world.create_entity()
         image = components.Image("playerIdle.png")
-        animation = components.Animation("playerSimple.png", splitx=8, framelength=.1)
+        animation = components.Animation("playerSimple.png", splitx=80, framelength=.1)
         carry_image = components.Image("playerCarryIdle.png")
-        carry_animation = components.Animation("playerCarrySimple.png", splitx=8, framelength=.1)
+        carry_animation = components.Animation("playerCarrySimple.png", splitx=80, framelength=.1)
         self.world.add_component(player, components.Position(100, 100))
         self.world.add_component(player, components.Velocity(0, 0))
         self.world.add_component(player, image)
@@ -59,19 +59,18 @@ class SceneOne(scenebase.SceneBase):
         dragon = self.world.create_entity()
         self.world.add_component(dragon, components.Position(1000, 500))
         self.world.add_component(dragon, components.Velocity(0, 0))
-        self.world.add_component(dragon, components.Animation("dragon.png", splitx=64, frame=0))
+        self.world.add_component(dragon, components.Animation("dragon.png", splitx=640, frame=0))
         self.world.add_component(dragon, components.Size(640, 640))
         self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(320, 0, -320, 0)))
 
         def move_up(entity):
-            self.world.add_component(entity, components.ChangePosition((640, 420), 1, interpolation.Smooth(), move_down, entity))
-
+            self.world.add_component(entity, components.ChangePosition((640, 640), 1, interpolation.Smooth(), move_down, entity))
         def move_down(entity):
-            self.world.add_component(entity, components.ChangePosition((640, 480), 1, interpolation.Smooth(), move_up, entity))
+            self.world.add_component(entity, components.ChangePosition((640, 680), 1, interpolation.Smooth(), move_up, entity))
 
         tutorial = self.world.create_entity()
         image = self.font.render("press E to pick up your sword", False, (32, 255, 128))
-        self.world.add_component(tutorial, components.Position(640, 480))
+        self.world.add_component(tutorial, components.Position(640, 680))
         self.world.add_component(tutorial, components.Image(image=image))
         self.world.add_component(tutorial, components.Size(image.get_width(), image.get_height()))
         move_up(tutorial)
@@ -98,7 +97,7 @@ class SceneTwo(scenebase.SceneBase):
         scenebase.SceneBase.__init__(self)
 
     def init(self):
-        self.font = pygame.font.Font("RobotoMono-Regular.ttf", 42)
+        self.font = pygame.font.Font("kenpixel.ttf", 42)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -108,9 +107,9 @@ class SceneTwo(scenebase.SceneBase):
 
         player = self.world.create_entity()
         image = components.Image("playerIdle.png")
-        animation = components.Animation("playerSimple.png", splitx=8, framelength=.1)
+        animation = components.Animation("playerSimple.png", splitx=80, framelength=.1)
         carry_image = components.Image("playerCarryIdle.png")
-        carry_animation = components.Animation("playerCarrySimple.png", splitx=8, framelength=.1)
+        carry_animation = components.Animation("playerCarrySimple.png", splitx=80, framelength=.1)
         self.world.add_component(player, components.Position(100, 100))
         self.world.add_component(player, components.Velocity(0, 0))
         self.world.add_component(player, image)
@@ -146,7 +145,7 @@ class SceneTwo(scenebase.SceneBase):
         dragon = self.world.create_entity()
         self.world.add_component(dragon, components.Position(1000, 500))
         self.world.add_component(dragon, components.Velocity(0, 0))
-        self.world.add_component(dragon, components.Animation("dragon.png", splitx=64, frame=0))
+        self.world.add_component(dragon, components.Animation("dragon.png", splitx=640, frame=0))
         self.world.add_component(dragon, components.Size(640, 640))
         self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(320, 0, -320, 0)))
 
@@ -154,5 +153,5 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 100), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
