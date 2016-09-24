@@ -48,7 +48,7 @@ class RenderProcessor(esper.Processor):
         for ent, (c, p) in self.world.get_components(components.Circle, components.Position):
             pygame.draw.circle(screen, c.color, (int(p.x), int(p.y)), c.radius, c.width)
 
-        for ent, (r, p) in self.world.get_components(components.Rect, components.Position):
+        for ent, r in self.world.get_component(components.Rect):
             pygame.draw.rect(screen, r.color, r.rect)
 
         for ent, (pl, p, s) in self.world.get_components(components.Player, components.Position, components.Size):
@@ -209,7 +209,7 @@ class PhysicsProcessor(esper.Processor):
                 p.y -= v.y * dt
 
         for ent, (t, p, s)  in self.world.get_components(components.Touch, components.Position, components.Size):
-            rect = pygame.Rect(p.x, p.y, s.width, s.height)
+            rect = pygame.Rect(p.x - s.width / 2 + t.rect.x, p.y - s.height / 2 + t.rect.y, s.width + t.rect.width, s.height + t.rect.height)
             tp = self.world.component_for_entity(t.target, components.Position)
             ts = self.world.component_for_entity(t.target, components.Size)
             if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):

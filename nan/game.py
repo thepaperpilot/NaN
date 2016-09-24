@@ -51,9 +51,9 @@ class SceneOne(scenebase.SceneBase):
             self.world.add_component(damage, components.Delay(3, next_scene))
 
         def fade_out():
-            for ent in [bg, player, sword, dragon, tutorial]:
+            for ent, i in self.world.get_component(components.Image):
                 self.world.add_component(ent, components.ChangeAlpha(0, 1))
-            for ent in clouds:
+            for ent, a in self.world.get_component(components.Animation):
                 self.world.add_component(ent, components.ChangeAlpha(0, 1))
 
         dragon = self.world.create_entity()
@@ -61,7 +61,7 @@ class SceneOne(scenebase.SceneBase):
         self.world.add_component(dragon, components.Velocity(0, 0))
         self.world.add_component(dragon, components.Animation("dragon.png", splitx=64, frame=0))
         self.world.add_component(dragon, components.Size(640, 640))
-        self.world.add_component(dragon, components.Touch(sword, dragon_hit))
+        self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(320, 0, -320, 0)))
 
         def move_up(entity):
             self.world.add_component(entity, components.ChangePosition((640, 420), 1, interpolation.Smooth(), move_down, entity))
@@ -144,7 +144,9 @@ class SceneTwo(scenebase.SceneBase):
             self.world.add_component(damage, components.Delay(3, next_scene))
 
         def fade_out():
-            for ent in [bg, player, sword, dragon]:
+            for ent, i in self.world.get_component(components.Image):
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
+            for ent, a in self.world.get_component(components.Animation):
                 self.world.add_component(ent, components.ChangeAlpha(0, 1))
 
         dragon = self.world.create_entity()
@@ -152,7 +154,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(dragon, components.Velocity(0, 0))
         self.world.add_component(dragon, components.Animation("dragon.png", splitx=64, frame=0))
         self.world.add_component(dragon, components.Size(640, 640))
-        self.world.add_component(dragon, components.Touch(sword, dragon_hit))
+        self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(320, 0, -320, 0)))
 
         self.world.add_processor(processors.RenderProcessor())
         self.world.add_processor(processors.InputProcessor(), priority=10)

@@ -71,10 +71,11 @@ class Over:
 class Touch:
     active = False
 
-    def __init__(self, target=None, touch=None, multi=False):
+    def __init__(self, target=None, touch=None, multi=False, rect=pygame.Rect(0,0,0,0)):
         self.target = target
         self.touch = touch
         self.multi = multi
+        self.rect = rect
 
 class Circle:
     def __init__(self, color=(0,128,0), radius=0.0, width=0):
