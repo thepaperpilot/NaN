@@ -27,14 +27,14 @@ class SceneOne(scenebase.SceneBase):
         self.world.add_component(player, components.Position(100, 100))
         self.world.add_component(player, components.Velocity(0, 0))
         self.world.add_component(player, image)
-        self.world.add_component(player, components.Size(64, 64))
+        self.world.add_component(player, components.Size(80, 80))
         self.world.add_component(player, components.Player(image, animation, carry_image, carry_animation))
 
         sword = self.world.create_entity()
         self.world.add_component(sword, components.Position(300, 500))
         self.world.add_component(sword, components.Velocity(0, 0))
         self.world.add_component(sword, components.Image("sword.png"))
-        self.world.add_component(sword, components.Size(64, 64))
+        self.world.add_component(sword, components.Size(80, 80))
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
@@ -83,7 +83,7 @@ class SceneOne(scenebase.SceneBase):
             self.world.add_component(cloud, components.Position(random.randrange(100, 1180), random.randrange(75, 200)))
             #self.world.add_component(cloud, components.Image("cloud.png", blend=pygame.BLEND_RGBA_MAX))
             self.world.add_component(cloud, components.Image("cloud.png"))
-            self.world.add_component(cloud, components.Size(192, 96))
+            self.world.add_component(cloud, components.Size(160, 80))
             self.world.add_component(cloud, components.Background())
 
         self.world.add_processor(processors.RenderProcessor())

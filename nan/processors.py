@@ -62,6 +62,8 @@ class InputProcessor(esper.Processor):
         for event in filtered_events:
             if event.type == pygame.MOUSEMOTION:
                 x, y = pygame.mouse.get_pos()
+                x *= 1280 / pygame.display.get_surface().get_width()
+                y *= 720 / pygame.display.get_surface().get_height()
                 for ent, (s, p, o) in self.world.get_components(components.Size, components.Position, components.Over):
                     if p.x - s.width * s.scale // 2 <= x and p.x + s.width * s.scale // 2 >= x and p.y - s.height * s.scale / 2 <= y and p.y + s.height * s.scale // 2 >= y:
                         if not o.active:
@@ -72,6 +74,8 @@ class InputProcessor(esper.Processor):
                         o.active = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
+                x *= 1280 / pygame.display.get_surface().get_width()
+                y *= 720 / pygame.display.get_surface().get_height()
                 for ent, (s, p, c) in self.world.get_components(components.Size, components.Position, components.Click):
                     if p.x - s.width * s.scale // 2 <= x and p.x + s.width * s.scale // 2 >= x and p.y - s.height // 2 <= y and p.y + s.height // 2 >= y:
                         c.run()
@@ -193,7 +197,7 @@ class PhysicsProcessor(esper.Processor):
                     self.world.remove_component(ent, components.RotationalVelocity)
             else:
                 p.y -= v.y * dt
-                
+
         for ent, (t, p, s)  in self.world.get_components(components.Touch, components.Position, components.Size):
             rect = pygame.Rect(p.x, p.y, s.width, s.height)
             tp = self.world.component_for_entity(t.target, components.Position)
@@ -355,6 +359,8 @@ class TitleProcessor(esper.Processor):
                     self.x = p.x
                     self.y = p.y
                 mousex, mousey = pygame.mouse.get_pos()
+                mousex *= 1280 / pygame.display.get_surface().get_width()
+                mousey *= 720 / pygame.display.get_surface().get_height()
                 p.x = self.x + (self.x - mousex) / 10
                 p.y = self.y + (self.y - mousey) / 10
 

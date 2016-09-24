@@ -4,7 +4,8 @@ import title
 
 def run_game(width, height, titletext, fps, starting_scene):
     pygame.init()
-    screen = pygame.display.set_mode((width, height))
+    screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+    small_screen = pygame.Surface((1280, 720))
     pygame.display.set_caption(titletext)
     clock = pygame.time.Clock()
 
@@ -30,13 +31,17 @@ def run_game(width, height, titletext, fps, starting_scene):
                     quit_attempt = True
                 elif event.key == pygame.K_F4 and alt_pressed:
                     quit_attempt = True
+            elif event.type == pygame.VIDEORESIZE:
+                screen = pygame.display.set_mode(event.size, pygame.RESIZABLE)
 
             if quit_attempt:
                 active_scene.terminate()
             else:
                 filtered_events.append(event)
 
-        active_scene.world.process(filtered_events, pressed_keys, dt / 1000, screen)
+        active_scene.world.process(filtered_events, pressed_keys, dt / 1000, small_screen)
+
+        screen.blit(pygame.transform.scale(small_screen, screen.get_size()), (0,0))
 
         text = font.render("FPS: " + str(int(1000*1//dt)), True, (0, 128, 0))
         screen.blit(text, (10, 10))

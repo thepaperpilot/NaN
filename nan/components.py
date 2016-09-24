@@ -36,7 +36,7 @@ class Background: # Just an identifier component, because I can't/don't know how
 class Image:
     def __init__(self, file=None, image=None, blend=0, alpha=255):
         if file:
-            self.image = pygame.image.load(os.path.join('images', file))
+            self.image = pygame.image.load(os.path.join('images', file)).convert_alpha()
         else:
             self.image = image
         self.blend = blend
@@ -47,7 +47,7 @@ class Animation:
 
     def __init__(self, file=None, image=None, splitx=0, framelength=-1, frame=0, blend=0, alpha=255):
         if file:
-            self.image = pygame.image.load(os.path.join('images', file))
+            self.image = pygame.image.load(os.path.join('images', file)).convert_alpha()
         else:
             self.image = image
         self.splitx=splitx
