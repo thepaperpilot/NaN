@@ -81,6 +81,9 @@ class InputProcessor(esper.Processor):
                         c.run()
 
 class PlayerProcessor(esper.Processor):
+    left_down = False
+    right_down = False
+
     def __init__(self, player, vitality):
         esper.Processor.__init__(self)
         self.player = player
@@ -93,10 +96,12 @@ class PlayerProcessor(esper.Processor):
         pos = self.world.component_for_entity(self.player, components.Position)
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and not self.left_down:
                     v.x -= 3 * self.vitality
-                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    self.left_down = True
+                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and not self.right_down:
                     v.x += 3 * self.vitality
+                    self.right_down = True
                 elif (event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE) and v.y == 0:
                     v.y -= 6 * self.vitality
                 elif event.key == pygame.K_e:
@@ -128,10 +133,13 @@ class PlayerProcessor(esper.Processor):
                                 i.image = pygame.transform.rotate(i.image, 90)
                                 self.world.remove_component(ent, components.Velocity)
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and self.left_down:
                     v.x += 3 * self.vitality
-                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    self.left_down = False
+                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and self.right_down:
                     v.x -= 3 * self.vitality
+                    self.right_down = False
+
             elif event.type == pygame.MOUSEBUTTONDOWN and p.holding:
                 if self.world.has_component(self.player, components.Image):
                     self.world.remove_component(self.player, components.Image)
@@ -141,7 +149,9 @@ class PlayerProcessor(esper.Processor):
                     self.world.add_component(self.player, p.animation)
                 i = self.world.component_for_entity(p.holding, components.Image)
                 i.image = pygame.transform.rotate(i.image, -90)
-                angle = math.atan2(event.pos[1] - pos.y, event.pos[0] - pos.x) % (2 * math.pi)
+                x = event.pos[1] * 1280 / pygame.display.get_surface().get_width()
+                y = event.pos[0] * 720 / pygame.display.get_surface().get_height()
+                angle = math.atan2(x - pos.y, y - pos.x) % (2 * math.pi)
                 self.world.add_component(p.holding, components.Velocity(math.cos(angle)*16 * self.vitality, math.sin(angle)*12 * self.vitality))
                 self.world.add_component(p.holding, components.RotationalVelocity(320))
                 p.holding = None
@@ -384,8 +394,8 @@ class Scene1Processor(esper.Processor):
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         p = self.world.component_for_entity(self.player, components.Position)
-        if p.x > 920:
-            p.x = 920
+        if p.x > 900:
+            p.x = 900
 
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
