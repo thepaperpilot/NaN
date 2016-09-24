@@ -24,7 +24,7 @@ class GameScene(scenebase.SceneBase):
 
         for i in [1,2,3,4,5,6]:
             cloud = self.world.create_entity()
-            self.world.add_component(cloud, components.Position(random.randrange(200, 1080), random.randrange(75, 125)))
+            self.world.add_component(cloud, components.Position(random.randrange(100, 1180), random.randrange(75, 200)))
             #self.world.add_component(cloud, components.Image("cloud.png", blend=pygame.BLEND_RGBA_MAX))
             self.world.add_component(cloud, components.Image("cloud.png"))
             self.world.add_component(cloud, components.Size(192, 96))

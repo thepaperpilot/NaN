@@ -1,6 +1,6 @@
 *.pyc
-*/dist/
-*/build/
+dist/
+build/
 MANIFEST
-*/__pycache__
+__pycache__/
 Thumbs.db
