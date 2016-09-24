@@ -118,7 +118,7 @@ class PlayerProcessor(esper.Processor):
                     else:
                         rect = pygame.Rect(pos.x, pos.y - s.height * s.scale / 2, s.width * s.scale * (1 if p.facing_right else -1), s.height * s.scale)
                         rect.normalize()
-                        for ent, (p2, i) in self.world.get_components(components.Position, components.Image):
+                        for ent, (p2, i, v) in self.world.get_components(components.Position, components.Image, components.Velocity):
                             if self.world.has_component(ent, components.Player):
                                 continue
                             if rect.collidepoint(p2.x, p2.y):
@@ -220,6 +220,13 @@ class PhysicsProcessor(esper.Processor):
                         self.world.remove_component(ent, components.Touch)
             else:
                 t.active = False
+
+        for platEnt, (tl, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
+            for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
+                if (tl.x - box.width / 2) < p.x < (tl.x + box.width / 2) and (tl.y - box.height) < p.y < tl.y:
+                    if v.y > 0:
+                        p.y = min((tl.y - box.height), p.y)
+                    v.y = min(0, v.y)
 
 class AnimationProcessor(esper.Processor):
     def __init__(self):
@@ -411,7 +418,4 @@ class Scene2Processor(esper.Processor):
         self.player = player
 
     def process(self, filtered_events, pressed_keys, dt, screen):
-        for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
-            if 0 < p.x < 500 and 500 < p.y < 510 :
-                p.y = min(500, p.y)
-                v.y = min(0, v.y)
+        pass
