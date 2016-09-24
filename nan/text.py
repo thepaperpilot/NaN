@@ -5,16 +5,18 @@ import processors
 import interpolation
 import util
 
-class IntroScene(scenebase.SceneBase):
-    def __init__(self):
+class TextScene(scenebase.SceneBase):
+    def __init__(self, text, scene):
         scenebase.SceneBase.__init__(self)
+        self.text = text
+        self.scene = scene
 
     def init(self):
         self.font = pygame.font.Font("RobotoMono-Regular.ttf", 42)
 
         intro = self.world.create_entity()
-        image = pygame.Surface((1280, 720))
-        util.drawText(image, "This is the story of an adventurer named NaN, known across the land for his unwavering enthusiasm for helping anyone with anything. 3 years ago he even protected his hometown from a vicious wandering dragon...", (255, 255, 255), pygame.Rect(100, 100, 1080, 520), self.font)
+        image = pygame.Surface([1280,720], pygame.SRCALPHA, 32).convert_alpha()
+        util.drawText(image, self.text, (255, 255, 255), pygame.Rect(100, 100, 1080, 520), self.font)
         self.world.add_component(intro, components.Position(640, 320))
         self.world.add_component(intro, components.Image(image=image))
         self.world.add_component(intro, components.Size(image.get_width(), image.get_height()))
@@ -36,4 +38,4 @@ class IntroScene(scenebase.SceneBase):
 
         self.world.add_processor(processors.RenderProcessor())
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.IntroProcessor(self), priority=10)
+        self.world.add_processor(processors.TextProcessor(self, self.scene), priority=10)
