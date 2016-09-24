@@ -11,10 +11,10 @@ class RenderProcessor(esper.Processor):
         screen.fill((0, 0, 0))
         for ent, (i, p, s) in self.world.get_components(components.Image, components.Position, components.Size):
             if s.scale is 1:
-                screen.blit(i.image, (p.x - s.width // 2, p.y - s.height // 2))
+                screen.blit(i.image, (p.x - s.width // 2, p.y - s.height // 2), special_flags=i.blend)
             else:
                 image = pygame.transform.scale(i.image, (int(s.width * s.scale), int(s.height * s.scale)))
-                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2))
+                screen.blit(image, (p.x - s.width * s.scale // 2, p.y - s.height * s.scale // 2), special_flags=i.blend)
         for ent, (c, p) in self.world.get_components(components.Circle, components.Position):
             pygame.draw.circle(screen, c.color, (int(p.x), int(p.y)), c.radius, c.width)
         for ent, (r, p) in self.world.get_components(components.Rect, components.Position):
