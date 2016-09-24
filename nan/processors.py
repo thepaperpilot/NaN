@@ -414,16 +414,13 @@ class Scene2Processor(esper.Processor):
         self.font = font
 
     def process(self, filtered_events, pressed_keys, dt, screen):
-        p = self.world.component_for_entity(self.player, components.Position)
-        if 0 < p.x < 500 and 500 < p.y < 525 :
-            p.y = 500
-            self.world.component_for_entity(self.player, components.Velocity).y = 0
+        for ent, (p, v) in self.world.get_components(components.Position, components.Velocity):
+            if 0 < p.x < 500 and 500 < p.y < 510 :
+                p.y = 500
+                v.y = 0
 
-        for event in filtered_events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
-                    image = self.font.render("aim your mouse and click to throw", False, (32, 255, 128))
-                    self.world.component_for_entity(self.tutorial, components.Image).image = image
-                    imgs = self.world.component_for_entity(self.tutorial, components.Size)
-                    imgs.width = image.get_width()
-                    imgs.height = image.get_height()
+
+    #    p = self.world.component_for_entity(self.player, components.Position)
+    #    if 0 < p.x < 500 and 500 < p.y < 525 :
+    #        p.y = 500
+    #        self.world.component_for_entity(self.player, components.Velocity).y = 0

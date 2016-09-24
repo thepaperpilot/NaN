@@ -150,29 +150,6 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(dragon, components.Size(640, 640))
         self.world.add_component(dragon, components.Touch(sword, dragon_hit))
 
-        def move_up(entity):
-            self.world.add_component(entity, components.ChangePosition((640, 420), 1, interpolation.Smooth(), move_down, entity))
-
-        def move_down(entity):
-            self.world.add_component(entity, components.ChangePosition((640, 480), 1, interpolation.Smooth(), move_up, entity))
-
-        tutorial = self.world.create_entity()
-        image = self.font.render("press E to pick up your sword", False, (32, 255, 128))
-        self.world.add_component(tutorial, components.Position(640, 480))
-        self.world.add_component(tutorial, components.Image(image=image))
-        self.world.add_component(tutorial, components.Size(image.get_width(), image.get_height()))
-        move_up(tutorial)
-
-        clouds = []
-        for i in [1,2,3,4,5,6]:
-            cloud = self.world.create_entity()
-            clouds.append(cloud)
-            self.world.add_component(cloud, components.Position(random.randrange(100, 1180), random.randrange(75, 200)))
-            #self.world.add_component(cloud, components.Image("cloud.png", blend=pygame.BLEND_RGBA_MAX))
-            self.world.add_component(cloud, components.Image("cloud.png"))
-            self.world.add_component(cloud, components.Size(160, 80))
-            self.world.add_component(cloud, components.Background())
-
         self.world.add_processor(processors.RenderProcessor())
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
