@@ -123,7 +123,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(sword, components.Size(80, 80))
 
         floor2 = self.world.create_entity()
-        self.world.add_component(floor2, components.Position(520, 380))
+        self.world.add_component(floor2, components.Position(520, 390))
         self.world.add_component(floor2, components.Platform())
         self.world.add_component(floor2, components.Image("WoodPlatform3.png"))
         self.world.add_component(floor2, components.Size(720, 40))
