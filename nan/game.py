@@ -6,6 +6,7 @@ import components
 import processors
 import interpolation
 import game
+import random
 
 class GameScene(scenebase.SceneBase):
     def __init__(self):
@@ -16,8 +17,15 @@ class GameScene(scenebase.SceneBase):
         self.world.add_component(player, components.Position(100, 100))
         self.world.add_component(player, components.Velocity(0, 0))
         self.world.add_component(player, components.Image("player.png"))
-        self.world.add_component(player, components.Size(64, 32))
+        self.world.add_component(player, components.Size(64, 64))
         self.world.add_component(player, components.Player())
+
+        for i in [1,2,3,4,5,6]:
+            cloud = self.world.create_entity()
+            self.world.add_component(cloud, components.Position(random.randrange(200, 1080), random.randrange(75, 125)))
+            #self.world.add_component(cloud, components.Image("cloud.png", blend=pygame.BLEND_RGBA_MAX))
+            self.world.add_component(cloud, components.Image("cloud.png"))
+            self.world.add_component(cloud, components.Size(192, 96))
 
         self.world.add_processor(processors.ClickProcessor(), priority=10)
         self.world.add_processor(processors.RenderProcessor())

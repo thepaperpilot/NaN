@@ -23,11 +23,12 @@ class Text:
         self.color = color
 
 class Image:
-    def __init__(self, file=None, image=None):
+    def __init__(self, file=None, image=None, blend=0):
         if file:
             self.image = pygame.image.load(os.path.join('images', file))
         else:
             self.image = image
+        self.blend = blend
 
 class Click:
     def __init__(self, run=None):
