@@ -877,9 +877,9 @@ class SceneSix(scenebase.SceneBase):
             self.world.add_component(complaint, components.Image("speech.png"))
             self.world.add_component(bubble, components.Size(307, 173))
             if(self.world.component_for_entity(mug, components.Flammable).lit):
-                for ent, p in self.world.get_component(components.Player):
-                    if p.holding is mug:
-                        p.holding = None
+                p = self.world.component_for_entity(player, components.Player)
+                if p.holding is mug:
+                    p.holding = None
                 self.world.delete_entity(mug)
                 util.drawText(self.world.component_for_entity(complaint, components.Image).image, "Way to take your time.", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
                 self.world.add_component(complaint, components.ChangePosition((640, 350), 4, interpolation.Smooth(), fade_out))
