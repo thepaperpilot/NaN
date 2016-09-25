@@ -234,7 +234,7 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_component(stair, components.Image("WoodPlatform1.png"))
         self.world.add_component(stair, components.Size(240, 40))
         self.world.add_component(stair, components.Background())
-        
+
         bed = self.world.create_entity()
         self.world.add_component(bed, components.Position(260, 330))
         self.world.add_component(bed, components.Velocity(0, 0))
