@@ -14,7 +14,7 @@ def get_player(world):
     animation = components.Animation("playerSimple.png", splitx=80, framelength=.1)
     carry_image = components.Image("playerCarryIdle.png")
     carry_animation = components.Animation("playerCarrySimple.png", splitx=80, framelength=.1)
-    jump = components.Audio("jump")
+    jump = components.Audio("jump.ogg")
     throw = components.Audio("throw")
     world.add_component(player, components.Position(100, 100))
     world.add_component(player, components.Velocity(0, 0))
@@ -30,6 +30,10 @@ class SceneOne(scenebase.SceneBase):
 
     def init(self):
         self.font = pygame.font.Font("kenpixel.ttf", 42)
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.fadeout(100)
+        pygame.mixer.music.load('audio/Retro Reggae.ogg')
+        pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -109,6 +113,10 @@ class SceneTwo(scenebase.SceneBase):
     def init(self):
         self.font = pygame.font.Font("kenpixel.ttf", 42)
         self.small_font = pygame.font.Font("kenpixel.ttf", 16)
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.fadeout(100)
+        pygame.mixer.music.load('audio/Retro Comedy.ogg')
+        pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -215,6 +223,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(lamp, components.Flammable(True))
         self.world.add_component(lamp, components.Size(80, 80))
         self.world.add_component(lamp, components.Hang())
+        self.world.add_component(lamp, components.Audio("glass.ogg"))
 
         bubble = self.world.create_entity()
         self.world.add_component(bubble, components.Position(1000, 100))
