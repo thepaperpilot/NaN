@@ -347,6 +347,8 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_processor(processors.PlayerProcessor(player, 85), priority=25)
 
 class SceneFour(scenebase.SceneBase):
+    count = 0
+
     def __init__(self):
         scenebase.SceneBase.__init__(self)
 
@@ -366,6 +368,16 @@ class SceneFour(scenebase.SceneBase):
 
         player = get_player(self.world)
 
+        floor = self.world.create_entity()
+        self.world.add_component(floor, components.Position(640, 560))
+        self.world.add_component(floor, components.Size(1280, 100))
+        #self.world.add_component(floor, components.Image("box1.png"))
+
+        def spider_tally():
+            self.count += 1
+            if self.count > 3:
+                puzzle_complete()
+
         spider = self.world.create_entity()
         self.world.add_component(spider, components.Position(200, 320))
         self.world.add_component(spider, components.Hang())
@@ -373,6 +385,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(spider, components.Flammable(False))
         self.world.add_component(spider, components.Size(80, 80))
         self.world.add_component(spider, components.Audio("light"))
+        self.world.add_component(spider, components.Touch(floor, spider_tally))
 
         spider2 = self.world.create_entity()
         self.world.add_component(spider2, components.Position(280, 240))
@@ -381,6 +394,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(spider2, components.Flammable(False))
         self.world.add_component(spider2, components.Size(80, 80))
         self.world.add_component(spider2, components.Audio("light"))
+        self.world.add_component(spider2, components.Touch(floor, spider_tally))
 
         spider3 = self.world.create_entity()
         self.world.add_component(spider3, components.Position(420, 230))
@@ -389,6 +403,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(spider3, components.Flammable(False))
         self.world.add_component(spider3, components.Size(80, 80))
         self.world.add_component(spider3, components.Audio("light"))
+        self.world.add_component(spider3, components.Touch(floor, spider_tally))
 
         spider4 = self.world.create_entity()
         self.world.add_component(spider4, components.Position(440, 400))
@@ -397,6 +412,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(spider4, components.Flammable(False))
         self.world.add_component(spider4, components.Size(80, 80))
         self.world.add_component(spider4, components.Audio("light"))
+        self.world.add_component(spider4, components.Touch(floor, spider_tally))
 
         spider5 = self.world.create_entity()
         self.world.add_component(spider5, components.Position(590, 300))
@@ -405,6 +421,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(spider5, components.Flammable(False))
         self.world.add_component(spider5, components.Size(80, 80))
         self.world.add_component(spider5, components.Audio("light"))
+        self.world.add_component(spider5, components.Touch(floor, spider_tally))
 
         spider6 = self.world.create_entity()
         self.world.add_component(spider6, components.Position(680, 170))
@@ -413,6 +430,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(spider6, components.Flammable(False))
         self.world.add_component(spider6, components.Size(80, 80))
         self.world.add_component(spider6, components.Audio("light"))
+        self.world.add_component(spider6, components.Touch(floor, spider_tally))
 
         spider7 = self.world.create_entity()
         self.world.add_component(spider7, components.Position(760, 390))
@@ -421,6 +439,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(spider7, components.Flammable(False))
         self.world.add_component(spider7, components.Size(80, 80))
         self.world.add_component(spider7, components.Audio("light"))
+        self.world.add_component(spider7, components.Touch(floor, spider_tally))
 
         spider8 = self.world.create_entity()
         self.world.add_component(spider8, components.Position(830, 230))
@@ -429,6 +448,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(spider8, components.Flammable(False))
         self.world.add_component(spider8, components.Size(80, 80))
         self.world.add_component(spider8, components.Audio("light"))
+        self.world.add_component(spider8, components.Touch(floor, spider_tally))
 
         box = self.world.create_entity()
         self.world.add_component(box, components.Position(520, 560))
