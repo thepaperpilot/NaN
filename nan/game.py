@@ -916,6 +916,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(fireplace, components.Flammable(True))
         self.world.add_component(fireplace, components.Size(160, 160))
         self.world.add_component(fireplace, components.Velocity(0, 0))
+        self.world.add_component(fireplace, components.Background())
 
         shelf = self.world.create_entity()
         self.world.add_component(shelf, components.Position(250, 210))
