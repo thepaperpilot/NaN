@@ -6,6 +6,22 @@ import interpolation
 import random
 import text
 
+def get_player(world):
+    player = world.create_entity()
+    image = components.Image("playerIdle.png")
+    animation = components.Animation("playerSimple.png", splitx=80, framelength=.1)
+    carry_image = components.Image("playerCarryIdle.png")
+    carry_animation = components.Animation("playerCarrySimple.png", splitx=80, framelength=.1)
+    jump = components.Audio("jump")
+    throw = components.Audio("throw")
+    world.add_component(player, components.Position(100, 100))
+    world.add_component(player, components.Velocity(0, 0))
+    world.add_component(player, image)
+    world.add_component(player, components.Size(80, 80))
+    world.add_component(player, components.Player(image, animation, carry_image, carry_animation, jump, throw))
+
+    return player
+
 class SceneOne(scenebase.SceneBase):
     def __init__(self):
         scenebase.SceneBase.__init__(self)
@@ -19,16 +35,7 @@ class SceneOne(scenebase.SceneBase):
         self.world.add_component(bg, components.Size(1280, 720))
         self.world.add_component(bg, components.Background())
 
-        player = self.world.create_entity()
-        image = components.Image("playerIdle.png")
-        animation = components.Animation("playerSimple.png", splitx=80, framelength=.1)
-        carry_image = components.Image("playerCarryIdle.png")
-        carry_animation = components.Animation("playerCarrySimple.png", splitx=80, framelength=.1)
-        self.world.add_component(player, components.Position(100, 100))
-        self.world.add_component(player, components.Velocity(0, 0))
-        self.world.add_component(player, image)
-        self.world.add_component(player, components.Size(80, 80))
-        self.world.add_component(player, components.Player(image, animation, carry_image, carry_animation))
+        player = get_player(self.world)
 
         sword = self.world.create_entity()
         self.world.add_component(sword, components.Position(300, 500))
@@ -105,16 +112,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bg, components.Size(1280, 720))
         self.world.add_component(bg, components.Background())
 
-        player = self.world.create_entity()
-        image = components.Image("playerIdle.png")
-        animation = components.Animation("playerSimple.png", splitx=80, framelength=.1)
-        carry_image = components.Image("playerCarryIdle.png")
-        carry_animation = components.Animation("playerCarrySimple.png", splitx=80, framelength=.1)
-        self.world.add_component(player, components.Position(100, 100))
-        self.world.add_component(player, components.Velocity(0, 0))
-        self.world.add_component(player, image)
-        self.world.add_component(player, components.Size(80, 80))
-        self.world.add_component(player, components.Player(image, animation, carry_image, carry_animation))
+        player = get_player(self.world)
 
         sword = self.world.create_entity()
         self.world.add_component(sword, components.Position(300, 500))
@@ -139,17 +137,6 @@ class SceneTwo(scenebase.SceneBase):
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
-
-        def dragon_hit():
-            self.world.component_for_entity(dragon, components.Animation).frame = 1
-            damage = self.world.create_entity()
-            image = self.font.render("999,999,999,999,999,999", False, (255, 128, 0))
-            self.world.add_component(damage, components.Position(960, 320))
-            self.world.add_component(damage, components.Image(image=image))
-            self.world.add_component(damage, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(damage, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(damage, components.ChangeAlpha(0, 2))
-            self.world.add_component(damage, components.Delay(3, next_scene))
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):

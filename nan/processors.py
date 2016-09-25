@@ -71,6 +71,15 @@ class InputProcessor(esper.Processor):
                     elif o.active:
                         o.exitf(ent)
                         o.active = False
+                for ent, (i, p, s, r) in self.world.get_components(components.Image, components.Position, components.Size, components.Reactive):
+                    if r.x == 0:
+                        r.x = p.x
+                        r.y = p.y
+                    mousex, mousey = pygame.mouse.get_pos()
+                    mousex *= 1280 / pygame.display.get_surface().get_width()
+                    mousey *= 720 / pygame.display.get_surface().get_height()
+                    p.x = r.x + (r.x - mousex) / 10
+                    p.y = r.y + (r.y - mousey) / 10
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 x *= 1280 / pygame.display.get_surface().get_width()
@@ -78,11 +87,10 @@ class InputProcessor(esper.Processor):
                 for ent, (s, p, c) in self.world.get_components(components.Size, components.Position, components.Click):
                     if p.x - s.width * s.scale // 2 <= x and p.x + s.width * s.scale // 2 >= x and p.y - s.height // 2 <= y and p.y + s.height // 2 >= y:
                         c.run()
+                        if (self.world.has_component(ent, components.Audio)):
+                            self.world.component_for_entity(ent, components.Audio).sound.play()
 
 class PlayerProcessor(esper.Processor):
-    left_down = False
-    right_down = False
-
     def __init__(self, player, vitality):
         esper.Processor.__init__(self)
         self.player = player
@@ -93,16 +101,17 @@ class PlayerProcessor(esper.Processor):
         p = self.world.component_for_entity(self.player, components.Player)
         s = self.world.component_for_entity(self.player, components.Size)
         pos = self.world.component_for_entity(self.player, components.Position)
+        v.x = 0
+        if pressed_keys[pygame.K_LEFT] or pressed_keys[pygame.K_a]:
+            v.x -= 3 * self.vitality
+        if pressed_keys[pygame.K_RIGHT] or pressed_keys[pygame.K_d]:
+            v.x += 3 * self.vitality
+        print(v.x)
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
-                if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and not self.left_down:
-                    v.x -= 3 * self.vitality
-                    self.left_down = True
-                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and not self.right_down:
-                    v.x += 3 * self.vitality
-                    self.right_down = True
-                elif (event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE) and v.y == 0:
+                if (event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE) and v.y == 0:
                     v.y -= 6 * self.vitality
+                    p.jump.sound.play()
                 elif event.key == pygame.K_e:
                     if p.holding:
                         if self.world.has_component(self.player, components.Image):
@@ -115,6 +124,7 @@ class PlayerProcessor(esper.Processor):
                         i.image = pygame.transform.rotate(i.image, -90)
                         self.world.add_component(p.holding, components.Velocity(0,0))
                         p.holding = None
+
                     else:
                         rect = pygame.Rect(pos.x, pos.y - s.height * s.scale / 2, s.width * s.scale * (1 if p.facing_right else -1), s.height * s.scale)
                         rect.normalize()
@@ -131,14 +141,6 @@ class PlayerProcessor(esper.Processor):
                                     self.world.add_component(self.player, p.carry_animation)
                                 i.image = pygame.transform.rotate(i.image, 90)
                                 self.world.remove_component(ent, components.Velocity)
-            elif event.type == pygame.KEYUP:
-                if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and self.left_down:
-                    v.x += 3 * self.vitality
-                    self.left_down = False
-                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and self.right_down:
-                    v.x -= 3 * self.vitality
-                    self.right_down = False
-
             elif event.type == pygame.MOUSEBUTTONDOWN and p.holding:
                 if self.world.has_component(self.player, components.Image):
                     self.world.remove_component(self.player, components.Image)
@@ -154,6 +156,7 @@ class PlayerProcessor(esper.Processor):
                 self.world.add_component(p.holding, components.Velocity(math.cos(angle)*16 * self.vitality, math.sin(angle)*12 * self.vitality))
                 self.world.add_component(p.holding, components.RotationalVelocity(320))
                 p.holding = None
+                p.throw.sound.play()
 
             if v.x == 0 and self.world.has_component(self.player, components.Animation):
                 self.world.remove_component(self.player, components.Animation)
@@ -359,27 +362,6 @@ class AnimationProcessor(esper.Processor):
 
         for (chain, args) in to_run:
             chain(*args)
-
-class TitleProcessor(esper.Processor):
-    x = 0
-    y = 0
-
-    def __init__(self, title):
-        esper.Processor.__init__(self)
-        self.title = title
-
-    def process(self, filtered_events, pressed_keys, dt, screen):
-        for event in filtered_events:
-            if event.type == pygame.MOUSEMOTION:
-                p = self.world.component_for_entity(self.title, components.Position)
-                if self.x == 0:
-                    self.x = p.x
-                    self.y = p.y
-                mousex, mousey = pygame.mouse.get_pos()
-                mousex *= 1280 / pygame.display.get_surface().get_width()
-                mousey *= 720 / pygame.display.get_surface().get_height()
-                p.x = self.x + (self.x - mousex) / 10
-                p.y = self.y + (self.y - mousey) / 10
 
 class TextProcessor(esper.Processor):
     def __init__(self, callback):

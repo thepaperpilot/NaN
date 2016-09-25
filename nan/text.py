@@ -4,6 +4,7 @@ import components
 import processors
 import interpolation
 import util
+import os
 
 class TextScene(scenebase.SceneBase):
     def __init__(self, text, scene):
@@ -22,6 +23,7 @@ class TextScene(scenebase.SceneBase):
         self.world.add_component(text, components.Size(image.get_width(), image.get_height()))
         self.world.add_component(text, components.ChangePosition((640, 420), .5))
         self.world.add_component(text, components.ChangeAlpha(1, 1))
+        #self.world.add_component(text, components.Reactive())
 
         def fade_out(entity):
             self.world.add_component(entity, components.ChangeAlpha(.5, 1, interpolation.Circle(), fade_in, entity))
@@ -34,6 +36,7 @@ class TextScene(scenebase.SceneBase):
         self.world.add_component(continue_text, components.Position(640, 640))
         self.world.add_component(continue_text, components.Image(image=image))
         self.world.add_component(continue_text, components.Size(image.get_width(), image.get_height()))
+        #self.world.add_component(continue_text, components.Reactive())
         fade_in(continue_text)
 
         def fade_scene():
@@ -44,6 +47,7 @@ class TextScene(scenebase.SceneBase):
                 self.world.add_component(ent, components.ChangePosition((640, self.world.component_for_entity(ent, components.Position).y + 50), .5))
 
             self.world.add_component(text, components.Delay(1, next_scene))
+            pygame.mixer.Sound(os.path.join('audio', 'click')).play()
 
         def next_scene():
             self.switch_to_scene(self.scene)
@@ -51,3 +55,4 @@ class TextScene(scenebase.SceneBase):
         self.world.add_processor(processors.RenderProcessor())
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
         self.world.add_processor(processors.TextProcessor(fade_scene), priority=10)
+        self.world.add_processor(processors.InputProcessor())

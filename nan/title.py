@@ -53,6 +53,8 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_component(start, components.Size(image.get_width(), image.get_height(), .75))
         self.world.add_component(start, components.Click(start_game))
         self.world.add_component(start, components.Over(highlight, lowlight))
+        #self.world.add_component(start, components.Reactive())
+        self.world.add_component(start, components.Audio("click"))
 
         quitbutton = self.world.create_entity()
         image = self.font.render("quit", False, (0, 128, 0))
@@ -62,6 +64,8 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_component(quitbutton, components.Size(image.get_width(), image.get_height(), .75))
         self.world.add_component(quitbutton, components.Click(quit_game))
         self.world.add_component(quitbutton, components.Over(highlight, lowlight))
+        #self.world.add_component(quitbutton, components.Reactive())
+        self.world.add_component(quitbutton, components.Audio("click"))
 
         title = self.world.create_entity()
         image = self.titlefont.render("NaN", False, (0, 128, 0))
@@ -69,9 +73,9 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_component(title, components.Text("Puzzle Painter", self.titlefont))
         self.world.add_component(title, components.Image(image=image))
         self.world.add_component(title, components.Size(image.get_width(), image.get_height()))
+        self.world.add_component(title, components.Reactive())
 
         self.world.add_processor(processors.RenderProcessor())
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.TitleProcessor(title), priority=10)
