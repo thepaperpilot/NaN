@@ -223,13 +223,14 @@ class PhysicsProcessor(esper.Processor):
                         self.world.remove_component(ent, components.Touch)
             else:
                 t.active = False
-
+        #Hanging Object Physics
         for hangEnt, (h, p, s) in self.world.get_components(components.Hang, components.Position, components.Size):
             rect = pygame.Rect(p.x, p.y + s.height / 2, s.width, s.height)
             for ent, (v, tp, ts) in self.world.get_components(components.Velocity, components.Position, components.Size):
-                if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
-                    self.world.remove_component(hangEnt, components.Hang)
-                    self.world.add_component(hangEnt, components.Velocity(0,0))
+                if not self.world.has_component(ent, components.Player):
+                    if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
+                        self.world.remove_component(hangEnt, components.Hang)
+                        self.world.add_component(hangEnt, components.Velocity(0,0))
         #Platform physics
         for platEnt, (tl, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
             for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
@@ -237,6 +238,29 @@ class PhysicsProcessor(esper.Processor):
                     if v.y > 0:
                         p.y = min(((tl.y - box.height) - s.height / 2) + 20, p.y)
                     v.y = min(0, v.y)
+        #Flamable stuff
+        for flamEnt, (f, p, s) in self.world.get_components(components.Flammable, components.Position, components.Size):
+            if f.lit:
+                if not self.world.has_component(flamEnt, components.Delay):
+                    flame = self.world.create_entity()
+                    self.world.add_component(flame, components.Position(p.x, p.y))
+                    self.world.add_component(flame, components.Size(60,60))
+                    self.world.add_component(flame, components.Image("Flame.png"))
+                    self.world.add_component(flame, components.Particle())
+                    self.world.add_component(flame, components.Delay(2))
+                    self.world.add_component(flamEnt, components.Delay(1))
+                for ent, (f2, tp, ts) in self.world.get_components(components.Flammable, components.Position, components.Size):
+                    if not f2.lit:
+                        rect = pygame.Rect(p.x, p.y + s.height / 2, s.width, s.height)
+                        if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
+                            f2.lit = True
+
+
+        #FlameParticles
+        for ent, (p, pa) in self.world.get_components(components.Position, components.Particle):
+            if not self.world.has_component(ent, components.Delay):
+                self.world.delete_entity(ent)
+            p.y = p.y - 2
 
 class AnimationProcessor(esper.Processor):
     def __init__(self):

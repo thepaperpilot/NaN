@@ -134,6 +134,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bed, components.Position(260, 320))
         self.world.add_component(bed, components.Velocity(0, 0))
         self.world.add_component(bed, components.Image("Bed.png"))
+        self.world.add_component(bed, components.Flammable(False))
         self.world.add_component(bed, components.Size(160, 80))
         self.world.add_component(bed, components.Audio("heavy"))
 
@@ -141,6 +142,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bookshelf, components.Position(420, 280))
         self.world.add_component(bookshelf, components.Velocity(0, 0))
         self.world.add_component(bookshelf, components.Image("Bookshelf.png"))
+        self.world.add_component(bookshelf, components.Flammable(False))
         self.world.add_component(bookshelf, components.Size(80, 160))
         self.world.add_component(bookshelf, components.Audio("heavy"))
 
@@ -148,6 +150,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(chest, components.Position(540, 320))
         self.world.add_component(chest, components.Velocity(0, 0))
         self.world.add_component(chest, components.Image("chest.png"))
+        self.world.add_component(chest, components.Flammable(False))
         self.world.add_component(chest, components.Size(80, 80))
         self.world.add_component(chest, components.Audio("chest"))
 
@@ -155,6 +158,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(guy, components.Position(280, 560))
         self.world.add_component(guy, components.Velocity(0, 0))
         self.world.add_component(guy, components.Image("NPC1.png"))
+        self.world.add_component(guy, components.Flammable(False))
         self.world.add_component(guy, components.Size(80, 80))
         self.world.add_component(guy, components.Audio("grunt"))
 
@@ -162,6 +166,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(leftChair, components.Position(430, 560))
         self.world.add_component(leftChair, components.Velocity(0, 0))
         self.world.add_component(leftChair, components.Image("Chair.png"))
+        self.world.add_component(leftChair, components.Flammable(False))
         self.world.add_component(leftChair, components.Size(80, 80))
         self.world.add_component(leftChair, components.Audio("light"))
 
@@ -169,14 +174,16 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(rightChair, components.Position(610, 560))
         self.world.add_component(rightChair, components.Velocity(0, 0))
         self.world.add_component(rightChair, components.Image("Chair.png"))
+        self.world.add_component(rightChair, components.Flammable(False))
         self.world.add_component(rightChair, components.Size(80, 80))
         self.world.add_component(rightChair, components.Audio("light"))
-        self.world.component_for_entity(rightChair, components.Image).image = pygame.transform.flip(self.world.component_for_entity(rightChair, components.Image).image, True, False)
+        self.world.component_for_entity(rightChair, components.Image).image = pygame.transform.flip(self.world.component_for_entity(rightChair, components.Image).image, False, False)
 
         table = self.world.create_entity()
         self.world.add_component(table, components.Position(520, 560))
         self.world.add_component(table, components.Velocity(0, 0))
         self.world.add_component(table, components.Image("Table.png"))
+        self.world.add_component(table, components.Flammable(False))
         self.world.add_component(table, components.Size(80, 80))
         self.world.add_component(table, components.Audio("heavy"))
 
@@ -194,6 +201,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(books, components.Position(760, 560))
         self.world.add_component(books, components.Velocity(0, 0))
         self.world.add_component(books, components.Image("PileOfBooks.png"))
+        self.world.add_component(books, components.Flammable(False))
         self.world.add_component(books, components.Size(80, 80))
         self.world.add_component(books, components.Touch(bookshelf, puzzle_complete, rect=pygame.Rect(5, 0, -10, 0)))
         self.world.add_component(books, components.Audio("light"))
@@ -202,6 +210,7 @@ class SceneTwo(scenebase.SceneBase):
         lamp = self.world.create_entity()
         self.world.add_component(lamp, components.Position(760, 170))
         self.world.add_component(lamp, components.Image("Chandelier.png"))
+        self.world.add_component(lamp, components.Flammable(True))
         self.world.add_component(lamp, components.Size(80, 80))
         self.world.add_component(lamp, components.Hang())
 
