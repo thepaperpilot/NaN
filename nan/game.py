@@ -171,6 +171,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(rightChair, components.Image("Chair.png"))
         self.world.add_component(rightChair, components.Size(80, 80))
         self.world.add_component(rightChair, components.Audio("light"))
+        self.world.component_for_entity(rightChair, components.Image).image = pygame.transform.flip(self.world.component_for_entity(rightChair, components.Image).image, True, False)
 
         table = self.world.create_entity()
         self.world.add_component(table, components.Position(520, 560))
