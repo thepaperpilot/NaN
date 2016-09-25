@@ -70,10 +70,42 @@ class TitleScene(scenebase.SceneBase):
         title = self.world.create_entity()
         image = self.titlefont.render("NaN", False, (0, 128, 0))
         self.world.add_component(title, components.Position(640, 240))
-        self.world.add_component(title, components.Text("Puzzle Painter", self.titlefont))
         self.world.add_component(title, components.Image(image=image))
         self.world.add_component(title, components.Size(image.get_width(), image.get_height()))
         self.world.add_component(title, components.Reactive())
+
+        def open_scene(scene):
+            self.switch_to_scene(scene)
+
+        scene1 = self.world.create_entity()
+        self.world.add_component(scene1, components.Position(300, 100))
+        self.world.add_component(scene1, components.Platform())
+        self.world.add_component(scene1, components.Image("IntroBG.png"))
+        self.world.add_component(scene1, components.Size(320, 180))
+        self.world.add_component(scene1, components.Reactive())
+        self.world.add_component(scene1, components.Click(open_scene, game.SceneOne()))
+
+        label1 = self.world.create_entity()
+        image = self.font.render("Scene 1", False, (0, 128, 0))
+        self.world.add_component(label1, components.Position(300, 220))
+        self.world.add_component(label1, components.Image(image=image))
+        self.world.add_component(label1, components.Size(image.get_width(), image.get_height()))
+        self.world.add_component(label1, components.Reactive())
+
+        scene2 = self.world.create_entity()
+        self.world.add_component(scene2, components.Position(980, 100))
+        self.world.add_component(scene2, components.Platform())
+        self.world.add_component(scene2, components.Image("HouseScene1BG.png"))
+        self.world.add_component(scene2, components.Size(320, 180))
+        self.world.add_component(scene2, components.Reactive())
+        self.world.add_component(scene2, components.Click(open_scene, game.SceneTwo()))
+
+        label2 = self.world.create_entity()
+        image = self.font.render("Scene 2", False, (0, 128, 0))
+        self.world.add_component(label2, components.Position(980, 220))
+        self.world.add_component(label2, components.Image(image=image))
+        self.world.add_component(label2, components.Size(image.get_width(), image.get_height()))
+        self.world.add_component(label2, components.Reactive())
 
         self.world.add_processor(processors.RenderProcessor())
         self.world.add_processor(processors.InputProcessor(), priority=10)

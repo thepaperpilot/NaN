@@ -31,7 +31,7 @@ def run_game(width, height, titletext, fps, starting_scene):
                 alt_pressed = pressed_keys[pygame.K_LALT] or \
                               pressed_keys[pygame.K_RALT]
                 if event.key == pygame.K_ESCAPE:
-                    quit_attempt = True
+                    active_scene.switch_to_scene(title.TitleScene())
                 elif event.key == pygame.K_F4 and alt_pressed:
                     quit_attempt = True
             elif event.type == pygame.VIDEORESIZE:

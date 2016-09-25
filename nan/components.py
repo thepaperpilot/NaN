@@ -74,8 +74,9 @@ class Animation:
         self.alpha = alpha
 
 class Click:
-    def __init__(self, run=None):
+    def __init__(self, run=None, *args):
         self.run = run
+        self.args = args
 
 class Over:
     active = False

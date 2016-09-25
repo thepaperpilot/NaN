@@ -86,7 +86,7 @@ class InputProcessor(esper.Processor):
                 y *= 720 / pygame.display.get_surface().get_height()
                 for ent, (s, p, c) in self.world.get_components(components.Size, components.Position, components.Click):
                     if p.x - s.width * s.scale // 2 <= x and p.x + s.width * s.scale // 2 >= x and p.y - s.height // 2 <= y and p.y + s.height // 2 >= y:
-                        c.run()
+                        c.run(*c.args)
                         if (self.world.has_component(ent, components.Audio)):
                             self.world.component_for_entity(ent, components.Audio).sound.play()
 

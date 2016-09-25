@@ -6,6 +6,7 @@ import interpolation
 import random
 import text
 import os
+import util
 
 def get_player(world):
     player = world.create_entity()
@@ -107,6 +108,7 @@ class SceneTwo(scenebase.SceneBase):
 
     def init(self):
         self.font = pygame.font.Font("kenpixel.ttf", 42)
+        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -204,6 +206,14 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(lamp, components.Image("Chandelier.png"))
         self.world.add_component(lamp, components.Size(80, 80))
         self.world.add_component(lamp, components.Hang())
+
+        bubble = self.world.create_entity()
+        self.world.add_component(bubble, components.Position(1000, 100))
+        self.world.add_component(bubble, components.Image("speech.png"))
+        self.world.add_component(bubble, components.Size(307, 173))
+        self.world.add_component(bubble, components.Hang())
+        image = self.world.component_for_entity(bubble, components.Image).image
+        util.drawText(image, "Ah! NaN, just in time! I need your help putting my books away. They are very important!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
