@@ -111,3 +111,13 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
+
+        for ent, (i, p, s, r) in self.world.get_components(components.Image, components.Position, components.Size, components.Reactive):
+            if r.x == 0:
+                r.x = p.x
+                r.y = p.y
+            mousex, mousey = pygame.mouse.get_pos()
+            mousex *= 1280 / pygame.display.get_surface().get_width()
+            mousey *= 720 / pygame.display.get_surface().get_height()
+            p.x = r.x + (r.x - mousex) / 10
+            p.y = r.y + (r.y - mousey) / 10

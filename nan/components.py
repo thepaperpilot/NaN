@@ -187,7 +187,3 @@ class Hang:
 class Flammable:
     def __init__(self, lit=False):
         self.lit = lit
-
-class Particle:
-    def __init__(self):
-        pass
