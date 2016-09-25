@@ -48,8 +48,8 @@ def run_game(width, height, titletext, fps, starting_scene):
 
         screen.blit(pygame.transform.scale(small_screen, screen.get_size()), (0,0))
 
-        text = font.render("FPS: " + str(int(1000*1//dt)), True, (128, 255, 128))
-        screen.blit(text, (10, 10))
+        #text = font.render("FPS: " + str(int(1000*1//dt)), True, (128, 255, 128))
+        #screen.blit(text, (10, 10))
 
         if active_scene is not active_scene.next:
             clock.tick(fps)
