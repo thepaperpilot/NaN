@@ -6,11 +6,13 @@ class Player:
     facing_right=True
     holding=None
 
-    def __init__(self, image=None, animation=None, carry_image=None, carry_animation=None):
+    def __init__(self, image=None, animation=None, carry_image=None, carry_animation=None, jump=None, throw=None):
         self.image = image
         self.animation = animation
         self.carry_image = carry_image
         self.carry_animation = carry_animation
+        self.jump = jump
+        self.throw = throw
 
 class Position:
     def __init__(self, x=0.0, y=0.0):
@@ -41,6 +43,20 @@ class Image:
             self.image = image
         self.blend = blend
         self.alpha = alpha
+
+class Reactive:
+    x = 0
+    y = 0
+
+    def __init__(self):
+        pass
+
+class Audio:
+    def __init__(self, file=None, sound=None):
+        if file:
+            self.sound = pygame.mixer.Sound(os.path.join('audio', file))
+        else:
+            self.sound = sound        
 
 class Animation:
     time = 0
