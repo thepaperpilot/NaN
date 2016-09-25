@@ -200,7 +200,7 @@ class PlayerProcessor(esper.Processor):
         if p.holding:
             p3 = self.world.component_for_entity(p.holding, components.Position)
             p3.x = pos.x
-            p3.y = pos.y - s.height
+            p3.y = pos.y - s.height + 10
 
 class PhysicsProcessor(esper.Processor):
     def __init__(self, ground=-1):
