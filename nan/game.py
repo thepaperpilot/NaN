@@ -139,9 +139,9 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(stair, components.Image("WoodPlatform1.png"))
         self.world.add_component(stair, components.Size(240, 40))
         self.world.add_component(stair, components.Background())
-
+        #300
         bed = self.world.create_entity()
-        self.world.add_component(bed, components.Position(260, 320))
+        self.world.add_component(bed, components.Position(260, 20))
         self.world.add_component(bed, components.Velocity(0, 0))
         self.world.add_component(bed, components.Image("Bed.png"))
         self.world.add_component(bed, components.Flammable(False))
@@ -149,7 +149,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bed, components.Audio("heavy"))
 
         bookshelf = self.world.create_entity()
-        self.world.add_component(bookshelf, components.Position(420, 280))
+        self.world.add_component(bookshelf, components.Position(420, -20))
         self.world.add_component(bookshelf, components.Velocity(0, 0))
         self.world.add_component(bookshelf, components.Image("Bookshelf.png"))
         self.world.add_component(bookshelf, components.Flammable(False))
@@ -157,7 +157,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bookshelf, components.Audio("heavy"))
 
         chest = self.world.create_entity()
-        self.world.add_component(chest, components.Position(540, 320))
+        self.world.add_component(chest, components.Position(540, 20))
         self.world.add_component(chest, components.Velocity(0, 0))
         self.world.add_component(chest, components.Image("chest.png"))
         self.world.add_component(chest, components.Flammable(False))
@@ -345,10 +345,6 @@ class SceneThree(scenebase.SceneBase):
         vase = self.world.create_entity()
 
         def puzzle_complete():
-            p = self.world.component_for_entity(player, components.Player)
-            if p.holding is vase:
-                p.holding = None
-            self.world.delete_entity(vase)
             complaint = self.world.create_entity()
             image = self.font.render("Way to take your time.", False, (255, 128, 0))
             self.world.add_component(complaint, components.Position(500, 500))
