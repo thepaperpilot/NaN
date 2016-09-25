@@ -106,7 +106,6 @@ class PlayerProcessor(esper.Processor):
             v.x -= 3 * self.vitality
         if pressed_keys[pygame.K_RIGHT] or pressed_keys[pygame.K_d]:
             v.x += 3 * self.vitality
-        print(v.x)
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
                 if (event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE) and v.y == 0:
