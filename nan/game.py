@@ -195,17 +195,15 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(books, components.Velocity(0, 0))
         self.world.add_component(books, components.Image("PileOfBooks.png"))
         self.world.add_component(books, components.Size(80, 80))
-<<<<<<< HEAD
         self.world.add_component(books, components.Touch(bookshelf, puzzle_complete, rect=pygame.Rect(5, 0, -10, 0)))
-=======
-        self.world.add_component(books, components.Touch(bookshelf, puzzle_complete))
         self.world.add_component(books, components.Audio("light"))
->>>>>>> 9683469d033c980afbf2719776aa25e028b6f14e
+
 
         lamp = self.world.create_entity()
         self.world.add_component(lamp, components.Position(760, 170))
         self.world.add_component(lamp, components.Image("Chandelier.png"))
         self.world.add_component(lamp, components.Size(80, 80))
+        self.world.add_component(lamp, components.Hang())
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))

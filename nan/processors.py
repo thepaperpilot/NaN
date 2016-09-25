@@ -228,16 +228,8 @@ class PhysicsProcessor(esper.Processor):
             rect = pygame.Rect(p.x, p.y + s.height / 2, s.width, s.height)
             for ent, (v, tp, ts) in self.world.get_components(components.Velocity, components.Position, components.Size):
                 if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
-                    if not ent.active:
-                        self.world.add_component(hangEnt, components.Velocity(0,0))
-                        if ent.multi:
-                            ent.active = True
-                        else:
-                            self.world.remove_component(ent, components.Hang)
-                else:
-                    t.active = False
-
-
+                    self.world.remove_component(hangEnt, components.Hang)
+                    self.world.add_component(hangEnt, components.Velocity(0,0))
         #Platform physics
         for platEnt, (tl, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
             for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
