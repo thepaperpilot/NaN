@@ -71,7 +71,7 @@ class SceneOne(scenebase.SceneBase):
         self.world.add_component(dragon, components.Velocity(0, 0))
         self.world.add_component(dragon, components.Animation("dragon.png", splitx=640, frame=0))
         self.world.add_component(dragon, components.Size(640, 640))
-        self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(160, 0, -320, 0)))
+        self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(0, -400, -320, 0)))
 
         def move_up(entity):
             self.world.add_component(entity, components.ChangePosition((640, 640), 1, interpolation.Smooth(), move_down, entity))
@@ -190,6 +190,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(table, components.Audio("heavy"))
 
         def puzzle_complete():
+            self.world.delete_entity(books)
             complaint = self.world.create_entity()
             image = self.font.render("Way to take your time.", False, (255, 128, 0))
             self.world.add_component(complaint, components.Position(500, 500))
@@ -223,6 +224,223 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bubble, components.Hang())
         image = self.world.component_for_entity(bubble, components.Image).image
         util.drawText(image, "Ah! NaN, just in time! I need your help putting my books away. They are very important!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+
+        def next_scene():
+            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneThree()))
+
+        def fade_out():
+            for ent, i in self.world.get_component(components.Image):
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
+            for ent, a in self.world.get_component(components.Animation):
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
+
+        self.world.add_processor(processors.RenderProcessor())
+        self.world.add_processor(processors.InputProcessor(), priority=10)
+        self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
+        self.world.add_processor(processors.AnimationProcessor(), priority=5)
+        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
+        self.world.add_processor(processors.Scene2Processor(player), priority=30)
+
+class SceneThree(scenebase.SceneBase):
+    def __init__(self):
+        scenebase.SceneBase.__init__(self)
+
+    def init(self):
+        self.font = pygame.font.Font("kenpixel.ttf", 42)
+        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
+
+        bg = self.world.create_entity()
+        self.world.add_component(bg, components.Position(640, 360))
+        self.world.add_component(bg, components.Image("HouseSceneBlacksmithBG.png"))
+        self.world.add_component(bg, components.Size(1280, 720))
+        self.world.add_component(bg, components.Background())
+
+        player = get_player(self.world)
+
+        floor2 = self.world.create_entity()
+        self.world.add_component(floor2, components.Position(760, 390))
+        self.world.add_component(floor2, components.Platform())
+        self.world.add_component(floor2, components.Image("WoodPlatform3.png"))
+        self.world.add_component(floor2, components.Size(720, 40))
+        self.world.add_component(floor2, components.Background())
+
+        stair = self.world.create_entity()
+        self.world.add_component(stair, components.Position(280, 500))
+        self.world.add_component(stair, components.Platform())
+        self.world.add_component(stair, components.Image("WoodPlatform1.png"))
+        self.world.add_component(stair, components.Size(240, 40))
+        self.world.add_component(stair, components.Background())
+
+        anvil = self.world.create_entity()
+        self.world.add_component(anvil, components.Position(710, 560))
+        self.world.add_component(anvil, components.Velocity(0, 0))
+        self.world.add_component(anvil, components.Image("Anvil.png"))
+        self.world.add_component(anvil, components.Size(80, 80))
+        self.world.add_component(anvil, components.Audio("heavy"))
+
+        bed = self.world.create_entity()
+        self.world.add_component(bed, components.Position(500, 330))
+        self.world.add_component(bed, components.Velocity(0, 0))
+        self.world.add_component(bed, components.Image("Bed.png"))
+        self.world.add_component(bed, components.Flammable(False))
+        self.world.add_component(bed, components.Size(160, 80))
+        self.world.add_component(bed, components.Audio("heavy"))
+
+        bookshelf = self.world.create_entity()
+        self.world.add_component(bookshelf, components.Position(640, 290))
+        self.world.add_component(bookshelf, components.Velocity(0, 0))
+        self.world.add_component(bookshelf, components.Image("Bookshelf.png"))
+        self.world.add_component(bookshelf, components.Flammable(False))
+        self.world.add_component(bookshelf, components.Size(80, 160))
+        self.world.add_component(bookshelf, components.Audio("heavy"))
+
+        guy = self.world.create_entity()
+        self.world.add_component(guy, components.Position(280, 560))
+        self.world.add_component(guy, components.Velocity(0, 0))
+        self.world.add_component(guy, components.Image("NPC1.png"))
+        self.world.add_component(guy, components.Flammable(False))
+        self.world.add_component(guy, components.Size(80, 80))
+        self.world.add_component(guy, components.Audio("grunt"))
+
+        leftChair = self.world.create_entity()
+        self.world.add_component(leftChair, components.Position(480, 560))
+        self.world.add_component(leftChair, components.Velocity(0, 0))
+        self.world.add_component(leftChair, components.Image("Chair.png"))
+        self.world.add_component(leftChair, components.Flammable(False))
+        self.world.add_component(leftChair, components.Size(80, 80))
+        self.world.add_component(leftChair, components.Audio("light"))
+
+        topChair = self.world.create_entity()
+        self.world.add_component(topChair, components.Position(770, 330))
+        self.world.add_component(topChair, components.Velocity(0, 0))
+        self.world.add_component(topChair, components.Image("Chair.png"))
+        self.world.add_component(topChair, components.Flammable(False))
+        self.world.add_component(topChair, components.Size(80, 80))
+        self.world.add_component(topChair, components.Audio("light"))
+
+        table = self.world.create_entity()
+        self.world.add_component(table, components.Position(570, 560))
+        self.world.add_component(table, components.Velocity(0, 0))
+        self.world.add_component(table, components.Image("Table.png"))
+        self.world.add_component(table, components.Flammable(False))
+        self.world.add_component(table, components.Size(80, 80))
+        self.world.add_component(table, components.Audio("heavy"))
+
+        vase = self.world.create_entity()
+
+        def puzzle_complete():
+            self.world.delete_entity(vase)
+            complaint = self.world.create_entity()
+            image = self.font.render("Way to take your time.", False, (255, 128, 0))
+            self.world.add_component(complaint, components.Position(500, 500))
+            self.world.add_component(complaint, components.Image(image=image))
+            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
+            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
+            self.world.add_component(complaint, components.Delay(3, next_scene))
+
+        def open_chest():
+            if chest is not None:
+                p = self.world.component_for_entity(chest, components.Position)
+                v = self.world.component_for_entity(chest, components.Velocity)
+                self.world.delete_entity(chest)
+                self.world.add_component(vase, components.Position(p.x, p.y))
+                self.world.add_component(vase, components.Velocity(v.x, v.y))
+                self.world.add_component(vase, components.Size(80, 80))
+                self.world.add_component(vase, components.Audio("light"))
+                self.world.add_component(vase, components.Image("Vase.png"))
+                self.world.add_component(vase, components.Touch(guy, puzzle_complete, rect=pygame.Rect(0,0,0,0)))
+
+        def open_box1():
+            if box is not None:
+                n = self.world.create_entity()
+                p = self.world.component_for_entity(box, components.Position)
+                v = self.world.component_for_entity(box, components.Velocity)
+                self.world.delete_entity(box)
+                self.world.add_component(n, components.Position(p.x, p.y))
+                self.world.add_component(n, components.Velocity(v.x, v.y))
+                self.world.add_component(n, components.Size(80, 80))
+                self.world.add_component(n, components.Audio("light"))
+                self.world.add_component(n, components.Image("Chair.png"))
+                self.world.add_component(n, components.Flammable)
+
+        def open_box2():
+            if box2 is not None:
+                n = self.world.create_entity()
+                p = self.world.component_for_entity(box2, components.Position)
+                v = self.world.component_for_entity(box2, components.Velocity)
+                self.world.delete_entity(box2)
+                self.world.add_component(n, components.Position(p.x, p.y))
+                self.world.add_component(n, components.Velocity(v.x, v.y))
+                self.world.add_component(n, components.Size(80, 80))
+                self.world.add_component(n, components.Audio("light"))
+                self.world.add_component(n, components.Image("PileOfBooks.png"))
+                self.world.add_component(n, components.Flammable)
+
+        chest = self.world.create_entity()
+        self.world.add_component(chest, components.Position(1070, 330))
+        self.world.add_component(chest, components.Velocity(0, 0))
+        self.world.add_component(chest, components.Image("chest.png"))
+        self.world.add_component(chest, components.Flammable(False))
+        self.world.add_component(chest, components.Size(80, 80))
+        self.world.add_component(chest, components.Touch(anvil, open_chest, rect=pygame.Rect(0, 0, 0, 0)))
+        self.world.add_component(chest, components.Audio("chest"))
+
+        box = self.world.create_entity()
+        self.world.add_component(box, components.Position(860, 330))
+        self.world.add_component(box, components.Velocity(0, 0))
+        self.world.add_component(box, components.Image("box1.png"))
+        self.world.add_component(box, components.Flammable(False))
+        self.world.add_component(box, components.Size(80, 80))
+        self.world.add_component(box, components.Touch(anvil, open_box1, rect=pygame.Rect(0, 0, 0, 0)))
+        self.world.add_component(box, components.Audio("heavy"))
+
+        box2 = self.world.create_entity()
+        self.world.add_component(box2, components.Position(950, 330))
+        self.world.add_component(box2, components.Velocity(0, 0))
+        self.world.add_component(box2, components.Image("box2.png"))
+        self.world.add_component(box2, components.Flammable(False))
+        self.world.add_component(box2, components.Size(80, 80))
+        self.world.add_component(box2, components.Touch(anvil, open_box2, rect=pygame.Rect(0, 0, 0, 0)))
+        self.world.add_component(box2, components.Audio("heavy"))
+
+        lamp = self.world.create_entity()
+        self.world.add_component(lamp, components.Position(520, 170))
+        self.world.add_component(lamp, components.Image("Chandelier.png"))
+        self.world.add_component(lamp, components.Flammable(True))
+        self.world.add_component(lamp, components.Size(80, 80))
+        self.world.add_component(lamp, components.Hang())
+
+        lamp2 = self.world.create_entity()
+        self.world.add_component(lamp2, components.Position(1000, 170))
+        self.world.add_component(lamp2, components.Image("Chandelier.png"))
+        self.world.add_component(lamp2, components.Flammable(True))
+        self.world.add_component(lamp2, components.Size(80, 80))
+        self.world.add_component(lamp2, components.Hang())
+
+        forge = self.world.create_entity()
+        self.world.add_component(forge, components.Position(1040, 520))
+        self.world.add_component(anvil, components.Velocity(0, 0))
+        self.world.add_component(forge, components.Image("Forge.png"))
+        self.world.add_component(forge, components.Flammable(True))
+        self.world.add_component(forge, components.Size(80, 160))
+        self.world.add_component(anvil, components.Audio("heavy"))
+
+        workbench = self.world.create_entity()
+        self.world.add_component(workbench, components.Position(870, 560))
+        self.world.add_component(workbench, components.Velocity(0, 0))
+        self.world.add_component(workbench, components.Image("Workbench.png"))
+        self.world.add_component(workbench, components.Flammable(False))
+        self.world.add_component(workbench, components.Size(160, 80))
+        self.world.add_component(workbench, components.Audio("heavy"))
+
+        bubble = self.world.create_entity()
+        self.world.add_component(bubble, components.Position(300, 100))
+        self.world.add_component(bubble, components.Image("speech.png"))
+        self.world.add_component(bubble, components.Size(307, 173))
+        self.world.add_component(bubble, components.Hang())
+        image = self.world.component_for_entity(bubble, components.Image).image
+        util.drawText(image, "Help me find my vase etc-", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))

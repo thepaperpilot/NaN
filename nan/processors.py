@@ -226,11 +226,12 @@ class PhysicsProcessor(esper.Processor):
                 t.active = False
         #Hanging Object Physics
         for hangEnt, (h, p, s) in self.world.get_components(components.Hang, components.Position, components.Size):
-            rect = pygame.Rect(p.x, p.y + s.height / 2, s.width, s.height)
+            rect = pygame.Rect(p.x, p.y, s.width, s.height)
             for ent, (v, tp, ts) in self.world.get_components(components.Velocity, components.Position, components.Size):
                 if not self.world.has_component(ent, components.Player):
                     if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
-                        self.world.remove_component(hangEnt, components.Hang)
+                        if self.world.has_component(hangEnt, components.Hang):
+                            self.world.remove_component(hangEnt, components.Hang)
                         self.world.add_component(hangEnt, components.Velocity(0,0))
         #Platform physics
         for platEnt, (tl, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
@@ -252,7 +253,7 @@ class PhysicsProcessor(esper.Processor):
                     self.world.add_component(flamEnt, components.Delay(1))
                 for ent, (f2, tp, ts) in self.world.get_components(components.Flammable, components.Position, components.Size):
                     if not f2.lit:
-                        rect = pygame.Rect(p.x, p.y + s.height / 2, s.width, s.height)
+                        rect = pygame.Rect(p.x, p.y, s.width, s.height)
                         if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
                             f2.lit = True
 
