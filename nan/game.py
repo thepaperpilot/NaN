@@ -712,6 +712,7 @@ class SceneFive(scenebase.SceneBase):
         self.world.add_component(guy2, components.Flammable(False))
         self.world.add_component(guy2, components.Size(80, 80))
         self.world.add_component(guy2, components.Audio("grunt"))
+        self.world.component_for_entity(guy2, components.Image).image = pygame.transform.flip(self.world.component_for_entity(guy2, components.Image).image, False, False)
 
         def puzzle_complete():
             complaint = self.world.create_entity()
@@ -725,11 +726,11 @@ class SceneFive(scenebase.SceneBase):
 
         cat = self.world.create_entity()
         self.world.add_component(cat, components.Position(1100, 170))
-        self.world.add_component(cat, components.Hang)
+        self.world.add_component(cat, components.Hang())
         self.world.add_component(cat, components.Image("Cat.png"))
         self.world.add_component(cat, components.Flammable(False))
         self.world.add_component(cat, components.Size(80, 80))
-        self.world.add_component(cat, components.Touch(guy, puzzle_complete, rect=pygame.Rect(5, 0, -10, 0)))
+        self.world.add_component(cat, components.Touch(guy, puzzle_complete))
         self.world.add_component(cat, components.Audio("light"))
 
         bubble = self.world.create_entity()
