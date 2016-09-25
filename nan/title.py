@@ -19,7 +19,7 @@ class TitleScene(scenebase.SceneBase):
                 self.world.add_component(ent, components.ChangePosition((p.x, p.y + 100), .25))
                 self.world.add_component(ent, components.ChangeAlpha(0, .25))
             def change_scene():
-                self.switch_to_scene(text.TextScene("This is the story of an adventurer named NaN, known across the land for his unwavering enthusiasm for helping anyone with anything. 3 years ago he even protected his hometown from a vicious wandering dragon...", game.SceneOne()))
+                self.switch_to_scene(text.TextScene("This is the story of an adventurer named NaN, known across the land for his unwavering enthusiasm for helping anyone with anything. His abilities were known far and wide, and indeed our story even begins with him defeating a dragon with ease...", game.SceneOne()))
             next_scene = self.world.create_entity()
             self.world.add_component(next_scene, components.Delay(.5, change_scene))
 

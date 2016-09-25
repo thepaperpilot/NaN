@@ -50,7 +50,7 @@ class SceneOne(scenebase.SceneBase):
         self.world.add_component(sword, components.Size(80, 80))
 
         def next_scene():
-            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneTwo()))
+            self.switch_to_scene(text.TextScene("And thusly the skilled adventurer NaN took out yet another dragon. Dragon killing was no longer a dangerous quest but rather routine cleaning. With the dragon population dwindling NaN had time to help more people with their non life threatening problems.", SceneTwo()))
 
         def dragon_hit():
             self.world.component_for_entity(dragon, components.Animation).frame = 1
@@ -116,6 +116,102 @@ class SceneTwo(scenebase.SceneBase):
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.fadeout(100)
         pygame.mixer.music.load('audio/Retro Comedy.ogg')
+        pygame.mixer.music.play(-1)
+
+        bg = self.world.create_entity()
+        self.world.add_component(bg, components.Position(640, 360))
+        self.world.add_component(bg, components.Image("OutsideSceneBG.png"))
+        self.world.add_component(bg, components.Size(1280, 720))
+        self.world.add_component(bg, components.Background())
+
+        player = get_player(self.world)
+
+        flower = self.world.create_entity()
+        self.world.add_component(flower, components.Position(240, 560))
+        self.world.add_component(flower, components.Velocity(0, 0))
+        self.world.add_component(flower, components.Image("Flower.png"))
+        self.world.add_component(flower, components.Flammable(False))
+        self.world.add_component(flower, components.Size(80, 80))
+        self.world.add_component(flower, components.Audio("light"))
+
+        vase = self.world.create_entity()
+        self.world.add_component(vase, components.Position(510, 560))
+        self.world.add_component(vase, components.Velocity(0, 0))
+        self.world.add_component(vase, components.Image("Vase.png"))
+        self.world.add_component(vase, components.Flammable(False))
+        self.world.add_component(vase, components.Size(80, 80))
+        self.world.add_component(vase, components.Audio("light"))
+
+        guy = self.world.create_entity()
+        self.world.add_component(guy, components.Position(340, 560))
+        self.world.add_component(guy, components.Velocity(0, 0))
+        self.world.add_component(guy, components.Image("NPC2.png"))
+        self.world.add_component(guy, components.Flammable(False))
+        self.world.add_component(guy, components.Size(80, 80))
+        self.world.add_component(guy, components.Audio("grunt"))
+
+        guy2 = self.world.create_entity()
+        self.world.add_component(guy2, components.Position(950, 560))
+        self.world.add_component(guy2, components.Velocity(0, 0))
+        self.world.add_component(guy2, components.Image("NPC1.png"))
+        self.world.add_component(guy2, components.Flammable(False))
+        self.world.add_component(guy2, components.Size(80, 80))
+        self.world.add_component(guy2, components.Audio("grunt"))
+        self.world.component_for_entity(guy2, components.Image).image = pygame.transform.flip(self.world.component_for_entity(guy2, components.Image).image, False, False)
+
+        def puzzle_complete():
+            complaint = self.world.create_entity()
+            image = self.font.render("Way to take your time.", False, (255, 128, 0))
+            self.world.add_component(complaint, components.Position(500, 500))
+            self.world.add_component(complaint, components.Image(image=image))
+            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
+            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
+            self.world.add_component(complaint, components.Delay(3, next_scene))
+
+        cat = self.world.create_entity()
+        self.world.add_component(cat, components.Position(1100, 170))
+        self.world.add_component(cat, components.Hang())
+        self.world.add_component(cat, components.Image("Cat.png"))
+        self.world.add_component(cat, components.Flammable(False))
+        self.world.add_component(cat, components.Size(80, 80))
+        self.world.add_component(cat, components.Touch(guy, puzzle_complete))
+        self.world.add_component(cat, components.Audio("light"))
+
+        bubble = self.world.create_entity()
+        self.world.add_component(bubble, components.Position(200, 100))
+        self.world.add_component(bubble, components.Image("speech.png"))
+        self.world.add_component(bubble, components.Size(307, 173))
+        self.world.add_component(bubble, components.Hang())
+        image = self.world.component_for_entity(bubble, components.Image).image
+        util.drawText(image, "Oh no! My wonderful cat has found herself stuck in a tree! Won't someone please help me?", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+
+        def next_scene():
+            self.switch_to_scene(text.TextScene("With adventuring work in low demand and the cost of living constantly increasing, NaN was forced to stoop to more and more menial work.", SceneThree()))
+
+        def fade_out():
+            for ent, i in self.world.get_component(components.Image):
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
+            for ent, a in self.world.get_component(components.Animation):
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
+
+        self.world.add_processor(processors.RenderProcessor())
+        self.world.add_processor(processors.InputProcessor(), priority=10)
+        self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
+        self.world.add_processor(processors.AnimationProcessor(), priority=5)
+        self.world.add_processor(processors.PlayerProcessor(player, 95), priority=25)
+        self.world.add_processor(processors.Scene2Processor(player), priority=30)
+
+class SceneThree(scenebase.SceneBase):
+    def __init__(self):
+        scenebase.SceneBase.__init__(self)
+
+    def init(self):
+        self.font = pygame.font.Font("kenpixel.ttf", 42)
+        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.fadeout(100)
+        pygame.mixer.music.load('audio/Retro Polka.ogg')
         pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
@@ -238,7 +334,7 @@ class SceneTwo(scenebase.SceneBase):
         util.drawText(image, "Ah! NaN, just in time! I need your help putting my books away. They are very important!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
-            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneThree()))
+            self.switch_to_scene(text.TextScene("These thankless jobs took their toll on NaN. He put on a friendly face, but inside he was growing weary...", SceneFour()))
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):
@@ -250,10 +346,10 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 95), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 85), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
-class SceneThree(scenebase.SceneBase):
+class SceneFour(scenebase.SceneBase):
     def __init__(self):
         scenebase.SceneBase.__init__(self)
 
@@ -262,7 +358,7 @@ class SceneThree(scenebase.SceneBase):
         self.small_font = pygame.font.Font("kenpixel.ttf", 16)
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Retro Comedy.ogg')
+        pygame.mixer.music.load('audio/Retro Beat.ogg')
         pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
@@ -490,7 +586,7 @@ class SceneThree(scenebase.SceneBase):
         util.drawText(image, "Shoot, now where did that vase go? NaN, you touched it last. You need to find it for me!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
-            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneFour()))
+            self.switch_to_scene(text.TextScene("Lack of real adventuring work not only wore on NaN, but it dulled him. His body atrophied as his mind numbed, and he realized he could no longer perform the same feats he'd grown accustomed to.", SceneFive()))
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):
@@ -502,10 +598,10 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 85), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 70), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
-class SceneFour(scenebase.SceneBase):
+class SceneFive(scenebase.SceneBase):
     def __init__(self):
         scenebase.SceneBase.__init__(self)
 
@@ -514,7 +610,7 @@ class SceneFour(scenebase.SceneBase):
         self.small_font = pygame.font.Font("kenpixel.ttf", 16)
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Retro Beat.ogg')
+        pygame.mixer.music.load('audio/Space Cadet.ogg')
         pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
@@ -667,101 +763,5 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
-        self.world.add_processor(processors.Scene2Processor(player), priority=30)
-
-class SceneFive(scenebase.SceneBase):
-    def __init__(self):
-        scenebase.SceneBase.__init__(self)
-
-    def init(self):
-        self.font = pygame.font.Font("kenpixel.ttf", 42)
-        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Retro Comedy.ogg')
-        pygame.mixer.music.play(-1)
-
-        bg = self.world.create_entity()
-        self.world.add_component(bg, components.Position(640, 360))
-        self.world.add_component(bg, components.Image("OutsideSceneBG.png"))
-        self.world.add_component(bg, components.Size(1280, 720))
-        self.world.add_component(bg, components.Background())
-
-        player = get_player(self.world)
-
-        flower = self.world.create_entity()
-        self.world.add_component(flower, components.Position(240, 560))
-        self.world.add_component(flower, components.Velocity(0, 0))
-        self.world.add_component(flower, components.Image("Flower.png"))
-        self.world.add_component(flower, components.Flammable(False))
-        self.world.add_component(flower, components.Size(80, 80))
-        self.world.add_component(flower, components.Audio("light"))
-
-        vase = self.world.create_entity()
-        self.world.add_component(vase, components.Position(510, 560))
-        self.world.add_component(vase, components.Velocity(0, 0))
-        self.world.add_component(vase, components.Image("Vase.png"))
-        self.world.add_component(vase, components.Flammable(False))
-        self.world.add_component(vase, components.Size(80, 80))
-        self.world.add_component(vase, components.Audio("light"))
-
-        guy = self.world.create_entity()
-        self.world.add_component(guy, components.Position(340, 560))
-        self.world.add_component(guy, components.Velocity(0, 0))
-        self.world.add_component(guy, components.Image("NPC2.png"))
-        self.world.add_component(guy, components.Flammable(False))
-        self.world.add_component(guy, components.Size(80, 80))
-        self.world.add_component(guy, components.Audio("grunt"))
-
-        guy2 = self.world.create_entity()
-        self.world.add_component(guy2, components.Position(950, 560))
-        self.world.add_component(guy2, components.Velocity(0, 0))
-        self.world.add_component(guy2, components.Image("NPC1.png"))
-        self.world.add_component(guy2, components.Flammable(False))
-        self.world.add_component(guy2, components.Size(80, 80))
-        self.world.add_component(guy2, components.Audio("grunt"))
-        self.world.component_for_entity(guy2, components.Image).image = pygame.transform.flip(self.world.component_for_entity(guy2, components.Image).image, False, False)
-
-        def puzzle_complete():
-            complaint = self.world.create_entity()
-            image = self.font.render("Way to take your time.", False, (255, 128, 0))
-            self.world.add_component(complaint, components.Position(500, 500))
-            self.world.add_component(complaint, components.Image(image=image))
-            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
-            self.world.add_component(complaint, components.Delay(3, next_scene))
-
-        cat = self.world.create_entity()
-        self.world.add_component(cat, components.Position(1100, 170))
-        self.world.add_component(cat, components.Hang())
-        self.world.add_component(cat, components.Image("Cat.png"))
-        self.world.add_component(cat, components.Flammable(False))
-        self.world.add_component(cat, components.Size(80, 80))
-        self.world.add_component(cat, components.Touch(guy, puzzle_complete))
-        self.world.add_component(cat, components.Audio("light"))
-
-        bubble = self.world.create_entity()
-        self.world.add_component(bubble, components.Position(1000, 100))
-        self.world.add_component(bubble, components.Image("speech.png"))
-        self.world.add_component(bubble, components.Size(307, 173))
-        self.world.add_component(bubble, components.Hang())
-        image = self.world.component_for_entity(bubble, components.Image).image
-        util.drawText(image, "Ah! NaN, just in time! I need your help putting my books away. They are very important!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
-
-        def next_scene():
-            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneThree()))
-
-        def fade_out():
-            for ent, i in self.world.get_component(components.Image):
-                self.world.add_component(ent, components.ChangeAlpha(0, 1))
-            for ent, a in self.world.get_component(components.Animation):
-                self.world.add_component(ent, components.ChangeAlpha(0, 1))
-
-        self.world.add_processor(processors.RenderProcessor())
-        self.world.add_processor(processors.InputProcessor(), priority=10)
-        self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
-        self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 70), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 50), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
