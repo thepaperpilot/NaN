@@ -56,19 +56,3 @@ def run_game(width, height, titletext, fps, starting_scene):
         pygame.display.flip()
 
 run_game(1280, 720, "NaN", 60, title.TitleScene())
-
-def get_player(world):
-    player = world.create_entity()
-    image = components.Image("playerIdle.png")
-    animation = components.Animation("playerSimple.png", splitx=80, framelength=.1)
-    carry_image = components.Image("playerCarryIdle.png")
-    carry_animation = components.Animation("playerCarrySimple.png", splitx=80, framelength=.1)
-    jump = components.Audio("jump")
-    throw = components.Audio("throw")
-    world.add_component(player, components.Position(100, 100))
-    world.add_component(player, components.Velocity(0, 0))
-    world.add_component(player, image)
-    world.add_component(player, components.Size(80, 80))
-    world.add_component(player, components.Player(image, animation, carry_image, carry_animation, jump, throw))
-
-    return player
