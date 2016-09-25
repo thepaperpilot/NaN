@@ -556,20 +556,22 @@ class SceneFour(scenebase.SceneBase):
         def puzzle_complete():
             complaint = self.world.create_entity()
             self.world.add_component(complaint, components.Position(500, 500))
-            self.world.add_component(complaint, components.Image(image=image))
-            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
             self.world.add_component(complaint, components.ChangeAlpha(0, 2))
             if(self.world.component_for_entity(mug, components.Flammable).lit):
                 for ent, p in self.world.get_component(components.Player):
                     if p.holding is mug:
                         p.holding = None
-                self.world.delete_entity(books)
+                self.world.delete_entity(mug)
                 image = self.font.render("Way to take your time.", False, (255, 128, 0))
+                self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
+                self.world.add_component(complaint, components.Image(image=image))
+                self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
                 self.world.add_component(complaint, components.Delay(3, next_scene))
             else:
                 image = self.font.render("It's cold! Heat it up for me.", False, (255, 128, 0))
-                self.world.add_component(complaint, components.Delay(3, next_scene))
+                self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
+                self.world.add_component(complaint, components.Image(image=image))
+
 
 
         mug = self.world.create_entity()
@@ -578,7 +580,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(mug, components.Image("Mug.png"))
         self.world.add_component(mug, components.Flammable(False))
         self.world.add_component(mug, components.Size(80, 80))
-        self.world.add_component(mug, components.Touch(guy, puzzle_complete))
+        self.world.add_component(mug, components.Touch(guy, puzzle_complete, True))
         self.world.add_component(mug, components.Audio("light"))
 
 
