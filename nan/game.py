@@ -350,41 +350,73 @@ class SceneThree(scenebase.SceneBase):
 
         def open_chest():
             if chest is not None:
+                vase = self.world.create_entity()
                 p = self.world.component_for_entity(chest, components.Position)
-                v = self.world.component_for_entity(chest, components.Velocity)
                 self.world.delete_entity(chest)
                 self.world.add_component(vase, components.Position(p.x, p.y))
-                self.world.add_component(vase, components.Velocity(v.x, v.y))
                 self.world.add_component(vase, components.Size(80, 80))
                 self.world.add_component(vase, components.Audio("light"))
                 self.world.add_component(vase, components.Image("Vase.png"))
+                self.world.add_component(vase, components.Flammable())
                 self.world.add_component(vase, components.Touch(guy, puzzle_complete, rect=pygame.Rect(0,0,0,0)))
+                if self.world.component_for_entity(player, components.Player).holding == chest:
+                    self.world.component_for_entity(player, components.Player).holding = vase
+                    i = self.world.component_for_entity(vase, components.Image)
+                    s = self.world.component_for_entity(vase, components.Size)
+                    i.image = pygame.transform.rotate(i.image, 90)
+                    tmp = s.width
+                    s.width = s.height
+                    s.height = tmp
+                else:
+                    v = self.world.component_for_entity(chest, components.Velocity)
+                    self.world.add_component(vase, components.Velocity(v.x, v.y))
+                self.world.component_for_entity(vase, components.Audio).sound.play()
 
         def open_box1():
             if box is not None:
                 n = self.world.create_entity()
                 p = self.world.component_for_entity(box, components.Position)
-                v = self.world.component_for_entity(box, components.Velocity)
                 self.world.delete_entity(box)
                 self.world.add_component(n, components.Position(p.x, p.y))
-                self.world.add_component(n, components.Velocity(v.x, v.y))
                 self.world.add_component(n, components.Size(80, 80))
                 self.world.add_component(n, components.Audio("light"))
                 self.world.add_component(n, components.Image("Chair.png"))
-                self.world.add_component(n, components.Flammable)
+                self.world.add_component(n, components.Flammable())
+                if self.world.component_for_entity(player, components.Player).holding == box:
+                    self.world.component_for_entity(player, components.Player).holding = n
+                    i = self.world.component_for_entity(n, components.Image)
+                    s = self.world.component_for_entity(n, components.Size)
+                    i.image = pygame.transform.rotate(i.image, 90)
+                    tmp = s.width
+                    s.width = s.height
+                    s.height = tmp
+                else:
+                    v = self.world.component_for_entity(box, components.Velocity)
+                    self.world.add_component(n, components.Velocity(v.x, v.y))
+                self.world.component_for_entity(n, components.Audio).sound.play()
 
         def open_box2():
             if box2 is not None:
                 n = self.world.create_entity()
                 p = self.world.component_for_entity(box2, components.Position)
-                v = self.world.component_for_entity(box2, components.Velocity)
                 self.world.delete_entity(box2)
                 self.world.add_component(n, components.Position(p.x, p.y))
-                self.world.add_component(n, components.Velocity(v.x, v.y))
                 self.world.add_component(n, components.Size(80, 80))
                 self.world.add_component(n, components.Audio("light"))
                 self.world.add_component(n, components.Image("PileOfBooks.png"))
-                self.world.add_component(n, components.Flammable)
+                self.world.add_component(n, components.Flammable())
+                if self.world.component_for_entity(player, components.Player).holding == box2:
+                    self.world.component_for_entity(player, components.Player).holding = n
+                    i = self.world.component_for_entity(n, components.Image)
+                    s = self.world.component_for_entity(n, components.Size)
+                    i.image = pygame.transform.rotate(i.image, 90)
+                    tmp = s.width
+                    s.width = s.height
+                    s.height = tmp
+                else:
+                    v = self.world.component_for_entity(box2, components.Velocity)
+                    self.world.add_component(n, components.Velocity(v.x, v.y))
+                self.world.component_for_entity(n, components.Audio).sound.play()
 
         chest = self.world.create_entity()
         self.world.add_component(chest, components.Position(1070, 330))
