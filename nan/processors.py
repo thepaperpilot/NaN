@@ -3,6 +3,8 @@ import esper
 import components
 import math
 import util
+import interpolation
+import random
 
 # TODO clean up, abstract, w/e
 class RenderProcessor(esper.Processor):
@@ -138,13 +140,17 @@ class PlayerProcessor(esper.Processor):
                             self.world.remove_component(self.player, components.Animation)
                             self.world.add_component(self.player, p.animation)
                         i = self.world.component_for_entity(p.holding, components.Image)
+                        s = self.world.component_for_entity(p.holding, components.Size)
                         i.image = pygame.transform.rotate(i.image, -90)
+                        tmp = s.width
+                        s.width = s.height
+                        s.height = tmp
                         self.world.add_component(p.holding, components.Velocity(0,0))
                         p.holding = None
                     else:
                         rect = pygame.Rect(pos.x, pos.y - s.height * s.scale / 2, s.width * s.scale * (1 if p.facing_right else -1), s.height * s.scale)
                         rect.normalize()
-                        for ent, (p2, i, v) in self.world.get_components(components.Position, components.Image, components.Velocity):
+                        for ent, (p2, i, s, v) in self.world.get_components(components.Position, components.Image, components.Size, components.Velocity):
                             if self.world.has_component(ent, components.Player):
                                 continue
                             if rect.collidepoint(p2.x, p2.y):
@@ -156,6 +162,9 @@ class PlayerProcessor(esper.Processor):
                                     self.world.remove_component(self.player, components.Animation)
                                     self.world.add_component(self.player, p.carry_animation)
                                 i.image = pygame.transform.rotate(i.image, 90)
+                                tmp = s.width
+                                s.width = s.height
+                                s.height = tmp
                                 self.world.remove_component(ent, components.Velocity)
                                 if self.world.has_component(ent, components.Audio):
                                     self.world.component_for_entity(ent, components.Audio).sound.play()
@@ -168,7 +177,11 @@ class PlayerProcessor(esper.Processor):
                     self.world.remove_component(self.player, components.Animation)
                     self.world.add_component(self.player, p.animation)
                 i = self.world.component_for_entity(p.holding, components.Image)
+                s = self.world.component_for_entity(p.holding, components.Size)
                 i.image = pygame.transform.rotate(i.image, -90)
+                tmp = s.width
+                s.width = s.height
+                s.height = tmp
                 x = event.pos[1] * 1280 / pygame.display.get_surface().get_width()
                 y = event.pos[0] * 720 / pygame.display.get_surface().get_height()
                 angle = math.atan2(x - pos.y, y - pos.x) % (2 * math.pi)
@@ -186,6 +199,9 @@ class PhysicsProcessor(esper.Processor):
     def __init__(self, ground=-1):
         esper.Processor.__init__(self)
         self.ground = ground
+
+    def remove_entity(self, entity):
+        self.world.delete_entity(entity)
 
     def process(self, filtered_events, pressed_keys, dt, screen):
         for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
@@ -244,24 +260,17 @@ class PhysicsProcessor(esper.Processor):
             if f.lit:
                 if not self.world.has_component(flamEnt, components.Delay):
                     flame = self.world.create_entity()
-                    self.world.add_component(flame, components.Position(p.x, p.y))
+                    self.world.add_component(flame, components.Position(p.x - s.width / 2 + random.random() * s.width, p.y - s.height / 2 + random.random() * s.height))
                     self.world.add_component(flame, components.Size(60,60))
                     self.world.add_component(flame, components.Image("Flame.png"))
-                    self.world.add_component(flame, components.Particle())
-                    self.world.add_component(flame, components.Delay(2))
-                    self.world.add_component(flamEnt, components.Delay(1))
+                    self.world.add_component(flame, components.ChangePosition((p.x, p.y - 100), 1, interpolation.Smooth(), self.remove_entity, flame))
+                    self.world.add_component(flamEnt, components.Delay(.3))
+
                 for ent, (f2, tp, ts) in self.world.get_components(components.Flammable, components.Position, components.Size):
                     if not f2.lit:
                         rect = pygame.Rect(p.x, p.y + s.height / 2, s.width, s.height)
                         if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
                             f2.lit = True
-
-
-        #FlameParticles
-        for ent, (p, pa) in self.world.get_components(components.Position, components.Particle):
-            if not self.world.has_component(ent, components.Delay):
-                self.world.delete_entity(ent)
-            p.y = p.y - 2
 
 class AnimationProcessor(esper.Processor):
     def __init__(self):
