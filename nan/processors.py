@@ -193,7 +193,8 @@ class PhysicsProcessor(esper.Processor):
                 r = self.world.component_for_entity(ent, components.RotationalVelocity)
                 i = self.world.component_for_entity(ent, components.Image)
                 i.image = r.image
-                s.scale = r.scale
+                s.width = r.width
+                s.height = r.height
                 self.world.remove_component(ent, components.RotationalVelocity)
 
             v.y = min(v.y + 9.81*100*dt, 53*100) # terminal velocity
@@ -341,11 +342,14 @@ class AnimationProcessor(esper.Processor):
         for ent, (i, r, s) in self.world.get_components(components.Image, components.RotationalVelocity, components.Size):
             if not r.image:
                 r.image = i.image
-                r.scale = s.scale
+                r.width = s.width
+                r.height = s.height
             width = i.image.get_width()
+            height = i.image.get_height()
             r.angle += dt * r.speed
             i.image = pygame.transform.rotate(r.image, r.angle)
-            s.scale *= i.image.get_width() / width
+            s.width *= i.image.get_width() / width
+            s.height *= i.image.get_height() / height
 
         # Delay Animation
         for ent, d in self.world.get_component(components.Delay):
