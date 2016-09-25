@@ -141,7 +141,6 @@ class PlayerProcessor(esper.Processor):
                         i.image = pygame.transform.rotate(i.image, -90)
                         self.world.add_component(p.holding, components.Velocity(0,0))
                         p.holding = None
-
                     else:
                         rect = pygame.Rect(pos.x, pos.y - s.height * s.scale / 2, s.width * s.scale * (1 if p.facing_right else -1), s.height * s.scale)
                         rect.normalize()
@@ -158,6 +157,9 @@ class PlayerProcessor(esper.Processor):
                                     self.world.add_component(self.player, p.carry_animation)
                                 i.image = pygame.transform.rotate(i.image, 90)
                                 self.world.remove_component(ent, components.Velocity)
+                                if self.world.has_component(ent, components.Audio):
+                                    self.world.component_for_entity(ent, components.Audio).sound.play()
+                                break
             elif event.type == pygame.MOUSEBUTTONDOWN and p.holding:
                 if self.world.has_component(self.player, components.Image):
                     self.world.remove_component(self.player, components.Image)

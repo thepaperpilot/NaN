@@ -5,6 +5,7 @@ import processors
 import interpolation
 import random
 import text
+import os
 
 def get_player(world):
     player = world.create_entity()
@@ -56,6 +57,7 @@ class SceneOne(scenebase.SceneBase):
             self.world.add_component(damage, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
             self.world.add_component(damage, components.ChangeAlpha(0, 2))
             self.world.add_component(damage, components.Delay(3, next_scene))
+            pygame.mixer.Sound(os.path.join('audio', 'dragon.ogg')).play()
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):
@@ -133,42 +135,49 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bed, components.Velocity(0, 0))
         self.world.add_component(bed, components.Image("Bed.png"))
         self.world.add_component(bed, components.Size(160, 80))
+        self.world.add_component(bed, components.Audio("heavy"))
 
         bookshelf = self.world.create_entity()
         self.world.add_component(bookshelf, components.Position(420, 280))
         self.world.add_component(bookshelf, components.Velocity(0, 0))
         self.world.add_component(bookshelf, components.Image("Bookshelf.png"))
         self.world.add_component(bookshelf, components.Size(80, 160))
+        self.world.add_component(bookshelf, components.Audio("heavy"))
 
         chest = self.world.create_entity()
         self.world.add_component(chest, components.Position(540, 320))
         self.world.add_component(chest, components.Velocity(0, 0))
         self.world.add_component(chest, components.Image("chest.png"))
         self.world.add_component(chest, components.Size(80, 80))
+        self.world.add_component(chest, components.Audio("chest"))
 
         guy = self.world.create_entity()
         self.world.add_component(guy, components.Position(280, 560))
         self.world.add_component(guy, components.Velocity(0, 0))
         self.world.add_component(guy, components.Image("NPC1.png"))
         self.world.add_component(guy, components.Size(80, 80))
+        self.world.add_component(guy, components.Audio("grunt"))
 
         leftChair = self.world.create_entity()
         self.world.add_component(leftChair, components.Position(430, 560))
         self.world.add_component(leftChair, components.Velocity(0, 0))
         self.world.add_component(leftChair, components.Image("Chair.png"))
         self.world.add_component(leftChair, components.Size(80, 80))
+        self.world.add_component(leftChair, components.Audio("light"))
 
         rightChair = self.world.create_entity()
         self.world.add_component(rightChair, components.Position(610, 560))
         self.world.add_component(rightChair, components.Velocity(0, 0))
         self.world.add_component(rightChair, components.Image("Chair.png"))
         self.world.add_component(rightChair, components.Size(80, 80))
+        self.world.add_component(rightChair, components.Audio("light"))
 
         table = self.world.create_entity()
         self.world.add_component(table, components.Position(520, 560))
         self.world.add_component(table, components.Velocity(0, 0))
         self.world.add_component(table, components.Image("Table.png"))
         self.world.add_component(table, components.Size(80, 80))
+        self.world.add_component(table, components.Audio("heavy"))
 
         def puzzle_complete():
             complaint = self.world.create_entity()
@@ -186,6 +195,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(books, components.Image("PileOfBooks.png"))
         self.world.add_component(books, components.Size(80, 80))
         self.world.add_component(books, components.Touch(bookshelf, puzzle_complete))
+        self.world.add_component(books, components.Audio("light"))
 
         lamp = self.world.create_entity()
         self.world.add_component(lamp, components.Position(760, 170))
