@@ -18,10 +18,10 @@ class TextScene(scenebase.SceneBase):
         text = self.world.create_entity()
         image = pygame.Surface([1280,720], pygame.SRCALPHA, 32).convert_alpha()
         util.drawText(image, self.text, (255, 255, 255), pygame.Rect(100, 100, 1080, 520), self.font)
-        self.world.add_component(text, components.Position(640, 320))
+        self.world.add_component(text, components.Position(640, 240))
         self.world.add_component(text, components.Image(image=image, alpha=0))
         self.world.add_component(text, components.Size(image.get_width(), image.get_height()))
-        self.world.add_component(text, components.ChangePosition((640, 420), .5))
+        self.world.add_component(text, components.ChangePosition((640, 340), .5))
         self.world.add_component(text, components.ChangeAlpha(1, 1))
         #self.world.add_component(text, components.Reactive())
 

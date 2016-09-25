@@ -83,7 +83,7 @@ class SceneOne(scenebase.SceneBase):
             self.world.add_component(entity, components.ChangePosition((640, 680), 1, interpolation.Smooth(), move_up, entity))
 
         tutorial = self.world.create_entity()
-        image = self.font.render("press E to pick up your sword", False, (32, 255, 128))
+        image = self.font.render("use arrow keys or WASD to move", False, (32, 255, 128))
         self.world.add_component(tutorial, components.Position(640, 680))
         self.world.add_component(tutorial, components.Image(image=image))
         self.world.add_component(tutorial, components.Size(image.get_width(), image.get_height()))
@@ -161,13 +161,13 @@ class SceneTwo(scenebase.SceneBase):
 
         def puzzle_complete():
             complaint = self.world.create_entity()
-            image = self.font.render("Way to take your time.", False, (255, 128, 0))
-            self.world.add_component(complaint, components.Position(500, 500))
-            self.world.add_component(complaint, components.Image(image=image))
-            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
-            self.world.add_component(complaint, components.Delay(3, next_scene))
+            self.world.add_component(complaint, components.Position(640, 500))
+            self.world.add_component(complaint, components.Image("speech.png"))
+            util.drawText(self.world.component_for_entity(complaint, components.Image).image, "You better not have dropped her or anything.", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+            self.world.add_component(complaint, components.Size(307, 173))
+            self.world.add_component(complaint, components.ChangePosition((640, 350), 4, interpolation.Smooth(), fade_out))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 4, interpolation.Smooth()))
+            self.world.add_component(complaint, components.Delay(5, next_scene))
 
         cat = self.world.create_entity()
         self.world.add_component(cat, components.Position(1100, 170))
@@ -200,7 +200,6 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
         self.world.add_processor(processors.PlayerProcessor(player, 95), priority=25)
-        self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
 class SceneThree(scenebase.SceneBase):
     def __init__(self):
@@ -299,13 +298,13 @@ class SceneThree(scenebase.SceneBase):
                 p.holding = None
             self.world.delete_entity(books)
             complaint = self.world.create_entity()
-            image = self.font.render("Way to take your time.", False, (255, 128, 0))
-            self.world.add_component(complaint, components.Position(500, 500))
-            self.world.add_component(complaint, components.Image(image=image))
-            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
-            self.world.add_component(complaint, components.Delay(3, next_scene))
+            self.world.add_component(complaint, components.Position(640, 500))
+            self.world.add_component(complaint, components.Image("speech.png"))
+            util.drawText(self.world.component_for_entity(complaint, components.Image).image, "Wow, you got the books dirty. I can't use these anymore.", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+            self.world.add_component(complaint, components.Size(307, 173))
+            self.world.add_component(complaint, components.ChangePosition((640, 350), 4, interpolation.Smooth(), fade_out))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 4, interpolation.Smooth()))
+            self.world.add_component(complaint, components.Delay(5, next_scene))
 
         books = self.world.create_entity()
         self.world.add_component(books, components.Position(1000, 560))
@@ -315,7 +314,6 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_component(books, components.Size(80, 80))
         self.world.add_component(books, components.Touch(bookshelf, puzzle_complete, rect=pygame.Rect(5, 0, -10, 0)))
         self.world.add_component(books, components.Audio("light"))
-
 
         lamp = self.world.create_entity()
         self.world.add_component(lamp, components.Position(760, 170))
@@ -347,7 +345,6 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
         self.world.add_processor(processors.PlayerProcessor(player, 85), priority=25)
-        self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
 class SceneFour(scenebase.SceneBase):
     def __init__(self):
@@ -359,6 +356,147 @@ class SceneFour(scenebase.SceneBase):
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.fadeout(100)
         pygame.mixer.music.load('audio/Retro Beat.ogg')
+        pygame.mixer.music.play(-1)
+
+        bg = self.world.create_entity()
+        self.world.add_component(bg, components.Position(640, 360))
+        self.world.add_component(bg, components.Image("HouseScene3BG.png"))
+        self.world.add_component(bg, components.Size(1280, 720))
+        self.world.add_component(bg, components.Background())
+
+        player = get_player(self.world)
+
+        spider = self.world.create_entity()
+        self.world.add_component(spider, components.Position(200, 320))
+        self.world.add_component(spider, components.Hang())
+        self.world.add_component(spider, components.Image("Cobweb.png"))
+        self.world.add_component(spider, components.Flammable(False))
+        self.world.add_component(spider, components.Size(80, 80))
+        self.world.add_component(spider, components.Audio("light"))
+
+        spider2 = self.world.create_entity()
+        self.world.add_component(spider2, components.Position(280, 240))
+        self.world.add_component(spider2, components.Hang())
+        self.world.add_component(spider2, components.Image("Cobweb.png"))
+        self.world.add_component(spider2, components.Flammable(False))
+        self.world.add_component(spider2, components.Size(80, 80))
+        self.world.add_component(spider2, components.Audio("light"))
+
+        spider3 = self.world.create_entity()
+        self.world.add_component(spider3, components.Position(420, 230))
+        self.world.add_component(spider3, components.Hang())
+        self.world.add_component(spider3, components.Image("Cobweb.png"))
+        self.world.add_component(spider3, components.Flammable(False))
+        self.world.add_component(spider3, components.Size(80, 80))
+        self.world.add_component(spider3, components.Audio("light"))
+
+        spider4 = self.world.create_entity()
+        self.world.add_component(spider4, components.Position(440, 400))
+        self.world.add_component(spider4, components.Hang())
+        self.world.add_component(spider4, components.Image("Cobweb.png"))
+        self.world.add_component(spider4, components.Flammable(False))
+        self.world.add_component(spider4, components.Size(80, 80))
+        self.world.add_component(spider4, components.Audio("light"))
+
+        spider5 = self.world.create_entity()
+        self.world.add_component(spider5, components.Position(590, 300))
+        self.world.add_component(spider5, components.Hang())
+        self.world.add_component(spider5, components.Image("Cobweb.png"))
+        self.world.add_component(spider5, components.Flammable(False))
+        self.world.add_component(spider5, components.Size(80, 80))
+        self.world.add_component(spider5, components.Audio("light"))
+
+        spider6 = self.world.create_entity()
+        self.world.add_component(spider6, components.Position(680, 170))
+        self.world.add_component(spider6, components.Hang())
+        self.world.add_component(spider6, components.Image("Cobweb.png"))
+        self.world.add_component(spider6, components.Flammable(False))
+        self.world.add_component(spider6, components.Size(80, 80))
+        self.world.add_component(spider6, components.Audio("light"))
+
+        spider7 = self.world.create_entity()
+        self.world.add_component(spider7, components.Position(760, 390))
+        self.world.add_component(spider7, components.Hang())
+        self.world.add_component(spider7, components.Image("Cobweb.png"))
+        self.world.add_component(spider7, components.Flammable(False))
+        self.world.add_component(spider7, components.Size(80, 80))
+        self.world.add_component(spider7, components.Audio("light"))
+
+        spider8 = self.world.create_entity()
+        self.world.add_component(spider8, components.Position(830, 230))
+        self.world.add_component(spider8, components.Hang())
+        self.world.add_component(spider8, components.Image("Cobweb.png"))
+        self.world.add_component(spider8, components.Flammable(False))
+        self.world.add_component(spider8, components.Size(80, 80))
+        self.world.add_component(spider8, components.Audio("light"))
+
+        box = self.world.create_entity()
+        self.world.add_component(box, components.Position(520, 560))
+        self.world.add_component(box, components.Velocity(0, 0))
+        self.world.add_component(box, components.Image("box1.png"))
+        self.world.add_component(box, components.Flammable(True))
+        self.world.add_component(box, components.Size(80, 80))
+        self.world.add_component(box, components.Audio("light"))
+
+        guy = self.world.create_entity()
+        self.world.add_component(guy, components.Position(210, 560))
+        self.world.add_component(guy, components.Velocity(0, 0))
+        self.world.add_component(guy, components.Image("NPC3.png"))
+        self.world.add_component(guy, components.Flammable(False))
+        self.world.add_component(guy, components.Size(80, 80))
+        self.world.add_component(guy, components.Audio("grunt"))
+
+        def puzzle_complete():
+            complaint = self.world.create_entity()
+            self.world.add_component(complaint, components.Position(640, 500))
+            self.world.add_component(complaint, components.Image("speech.png"))
+            util.drawText(self.world.component_for_entity(complaint, components.Image).image, "Now get out of my barn!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+            self.world.add_component(complaint, components.Size(307, 173))
+            self.world.add_component(complaint, components.ChangePosition((640, 350), 4, interpolation.Smooth(), fade_out))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 4, interpolation.Smooth()))
+            self.world.add_component(complaint, components.Delay(5, next_scene))
+
+        cat = self.world.create_entity()
+        self.world.add_component(cat, components.Position(1190, 560))
+        self.world.add_component(cat, components.Velocity(0,0))
+        self.world.add_component(cat, components.Image("Cat.png"))
+        self.world.add_component(cat, components.Flammable(False))
+        self.world.add_component(cat, components.Size(80, 80))
+        self.world.add_component(cat, components.Audio("light"))
+
+        bubble = self.world.create_entity()
+        self.world.add_component(bubble, components.Position(1000, 100))
+        self.world.add_component(bubble, components.Image("speech.png"))
+        self.world.add_component(bubble, components.Size(307, 173))
+        self.world.add_component(bubble, components.Hang())
+        image = self.world.component_for_entity(bubble, components.Image).image
+        util.drawText(image, "My barn is dusty and full of cobwebs. NaN! Come here and do this for me.", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+
+        def next_scene():
+            self.switch_to_scene(text.TextScene("Lack of real adventuring work not only wore on NaN, but it dulled him. His body atrophied as his mind numbed, and he realized he could no longer perform the same feats he'd grown accustomed to.", SceneFive()))
+
+        def fade_out():
+            for ent, i in self.world.get_component(components.Image):
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
+            for ent, a in self.world.get_component(components.Animation):
+                self.world.add_component(ent, components.ChangeAlpha(0, 1))
+
+        self.world.add_processor(processors.RenderProcessor())
+        self.world.add_processor(processors.InputProcessor(), priority=10)
+        self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
+        self.world.add_processor(processors.AnimationProcessor(), priority=5)
+        self.world.add_processor(processors.PlayerProcessor(player, 75), priority=25)
+
+class SceneFive(scenebase.SceneBase):
+    def __init__(self):
+        scenebase.SceneBase.__init__(self)
+
+    def init(self):
+        self.font = pygame.font.Font("kenpixel.ttf", 42)
+        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.fadeout(100)
+        pygame.mixer.music.load('audio/Space Cadet.ogg')
         pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
@@ -442,12 +580,12 @@ class SceneFour(scenebase.SceneBase):
 
         def puzzle_complete():
             complaint = self.world.create_entity()
-            image = self.font.render("Way to take your time.", False, (0, 0, 0))
             self.world.add_component(complaint, components.Position(640, 500))
-            self.world.add_component(complaint, components.Image(image=image))
-            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(complaint, components.ChangePosition((640, 250), 4, interpolation.Smooth(), fade_out))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 4))
+            self.world.add_component(complaint, components.Image("speech.png"))
+            util.drawText(self.world.component_for_entity(complaint, components.Image).image, "You got a crack in it. Thanks for nothing.", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+            self.world.add_component(complaint, components.Size(307, 173))
+            self.world.add_component(complaint, components.ChangePosition((640, 350), 4, interpolation.Smooth(), fade_out))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 4, interpolation.Smooth()))
             self.world.add_component(complaint, components.Delay(5, next_scene))
 
         def open_chest():
@@ -582,11 +720,10 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(bubble, components.Image("speech.png"))
         self.world.add_component(bubble, components.Size(307, 173))
         self.world.add_component(bubble, components.Hang())
-        image = self.world.component_for_entity(bubble, components.Image).image
-        util.drawText(image, "Shoot, now where did that vase go? NaN, you touched it last. You need to find it for me!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+        util.drawText(self.world.component_for_entity(bubble, components.Image).image, "Shoot, now where did that vase go? NaN, you touched it last. You need to find it for me!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
-            self.switch_to_scene(text.TextScene("Lack of real adventuring work not only wore on NaN, but it dulled him. His body atrophied as his mind numbed, and he realized he could no longer perform the same feats he'd grown accustomed to.", SceneFive()))
+            self.switch_to_scene(text.TextScene("NaN was depressed. For the majority of his life he was the strongest, fastest, all around best adventurer in the whole realm. But it was his own effectiveness led to his now pitiful existence.", SceneSix()))
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):
@@ -598,10 +735,9 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 70), priority=25)
-        self.world.add_processor(processors.Scene2Processor(player), priority=30)
+        self.world.add_processor(processors.PlayerProcessor(player, 60), priority=25)
 
-class SceneFive(scenebase.SceneBase):
+class SceneSix(scenebase.SceneBase):
     def __init__(self):
         scenebase.SceneBase.__init__(self)
 
@@ -688,23 +824,19 @@ class SceneFive(scenebase.SceneBase):
         def puzzle_complete():
             complaint = self.world.create_entity()
             self.world.add_component(complaint, components.Position(640, 500))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 4))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 4, interpolation.Smooth()))
+            self.world.add_component(complaint, components.Image("speech.png"))
+            self.world.add_component(bubble, components.Size(307, 173))
             if(self.world.component_for_entity(mug, components.Flammable).lit):
                 for ent, p in self.world.get_component(components.Player):
                     if p.holding is mug:
                         p.holding = None
                 self.world.delete_entity(mug)
-                image = self.font.render("Way to take your time.", False, (0, 0, 0))
-                self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-                self.world.add_component(complaint, components.Image(image=image))
-                self.world.add_component(complaint, components.ChangePosition((640, 250), 4, interpolation.Smooth(), fade_out))
+                util.drawText(self.world.component_for_entity(complaint, components.Image).image, "Way to take your time.", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+                self.world.add_component(complaint, components.ChangePosition((640, 350), 4, interpolation.Smooth(), fade_out))
                 self.world.add_component(complaint, components.Delay(5, next_scene))
             else:
-                image = self.font.render("It's cold! Heat it up for me.", False, (0, 0, 0))
-                self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-                self.world.add_component(complaint, components.Image(image=image))
-
-
+                util.drawText(self.world.component_for_entity(complaint, components.Image).image, "It's cold! Heat it up for me.", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         mug = self.world.create_entity()
         self.world.add_component(mug, components.Position(250, 160))
@@ -714,7 +846,6 @@ class SceneFive(scenebase.SceneBase):
         self.world.add_component(mug, components.Size(80, 80))
         self.world.add_component(mug, components.Touch(guy, puzzle_complete, True))
         self.world.add_component(mug, components.Audio("light"))
-
 
         lamp = self.world.create_entity()
         self.world.add_component(lamp, components.Position(520, 160))
@@ -751,7 +882,7 @@ class SceneFive(scenebase.SceneBase):
         util.drawText(image, "About time you got here, NaN. I need my coffee stat! It's probably been sitting there for hours!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
-            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneFive()))
+            self.switch_to_scene(text.TextScene("NaN was unsure how much longer he could go on like this. He still wanted to help people, but was filled with thoughts of inadequacy and self doubt.", SceneOne()))
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):
@@ -763,147 +894,4 @@ class SceneFive(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 50), priority=25)
-        self.world.add_processor(processors.Scene2Processor(player), priority=30)
-
-class SceneSix(scenebase.SceneBase):
-    def __init__(self):
-        scenebase.SceneBase.__init__(self)
-
-    def init(self):
-        self.font = pygame.font.Font("kenpixel.ttf", 42)
-        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Space Cadet.ogg')
-        pygame.mixer.music.play(-1)
-
-        bg = self.world.create_entity()
-        self.world.add_component(bg, components.Position(640, 360))
-        self.world.add_component(bg, components.Image("HouseScene3BG.png"))
-        self.world.add_component(bg, components.Size(1280, 720))
-        self.world.add_component(bg, components.Background())
-
-        player = get_player(self.world)
-
-        spider = self.world.create_entity()
-        self.world.add_component(spider, components.Position(200, 320))
-        self.world.add_component(spider, components.Hang())
-        self.world.add_component(spider, components.Image("Cobweb.png"))
-        self.world.add_component(spider, components.Flammable(False))
-        self.world.add_component(spider, components.Size(80, 80))
-        self.world.add_component(spider, components.Audio("light"))
-
-        spider2 = self.world.create_entity()
-        self.world.add_component(spider2, components.Position(280, 240))
-        self.world.add_component(spider2, components.Hang())
-        self.world.add_component(spider2, components.Image("Cobweb.png"))
-        self.world.add_component(spider2, components.Flammable(False))
-        self.world.add_component(spider2, components.Size(80, 80))
-        self.world.add_component(spider2, components.Audio("light"))
-
-        spider3 = self.world.create_entity()
-        self.world.add_component(spider3, components.Position(420, 230))
-        self.world.add_component(spider3, components.Hang())
-        self.world.add_component(spider3, components.Image("Cobweb.png"))
-        self.world.add_component(spider3, components.Flammable(False))
-        self.world.add_component(spider3, components.Size(80, 80))
-        self.world.add_component(spider3, components.Audio("light"))
-
-        spider4 = self.world.create_entity()
-        self.world.add_component(spider4, components.Position(440, 400))
-        self.world.add_component(spider4, components.Hang())
-        self.world.add_component(spider4, components.Image("Cobweb.png"))
-        self.world.add_component(spider4, components.Flammable(False))
-        self.world.add_component(spider4, components.Size(80, 80))
-        self.world.add_component(spider4, components.Audio("light"))
-
-        spider5 = self.world.create_entity()
-        self.world.add_component(spider5, components.Position(590, 300))
-        self.world.add_component(spider5, components.Hang())
-        self.world.add_component(spider5, components.Image("Cobweb.png"))
-        self.world.add_component(spider5, components.Flammable(False))
-        self.world.add_component(spider5, components.Size(80, 80))
-        self.world.add_component(spider5, components.Audio("light"))
-
-        spider6 = self.world.create_entity()
-        self.world.add_component(spider6, components.Position(680, 170))
-        self.world.add_component(spider6, components.Hang())
-        self.world.add_component(spider6, components.Image("Cobweb.png"))
-        self.world.add_component(spider6, components.Flammable(False))
-        self.world.add_component(spider6, components.Size(80, 80))
-        self.world.add_component(spider6, components.Audio("light"))
-
-        spider7 = self.world.create_entity()
-        self.world.add_component(spider7, components.Position(760, 390))
-        self.world.add_component(spider7, components.Hang())
-        self.world.add_component(spider7, components.Image("Cobweb.png"))
-        self.world.add_component(spider7, components.Flammable(False))
-        self.world.add_component(spider7, components.Size(80, 80))
-        self.world.add_component(spider7, components.Audio("light"))
-
-        spider8 = self.world.create_entity()
-        self.world.add_component(spider8, components.Position(830, 230))
-        self.world.add_component(spider8, components.Hang())
-        self.world.add_component(spider8, components.Image("Cobweb.png"))
-        self.world.add_component(spider8, components.Flammable(False))
-        self.world.add_component(spider8, components.Size(80, 80))
-        self.world.add_component(spider8, components.Audio("light"))
-
-        box = self.world.create_entity()
-        self.world.add_component(box, components.Position(520, 560))
-        self.world.add_component(box, components.Velocity(0, 0))
-        self.world.add_component(box, components.Image("box1.png"))
-        self.world.add_component(box, components.Flammable(True))
-        self.world.add_component(box, components.Size(80, 80))
-        self.world.add_component(box, components.Audio("light"))
-
-        guy = self.world.create_entity()
-        self.world.add_component(guy, components.Position(210, 560))
-        self.world.add_component(guy, components.Velocity(0, 0))
-        self.world.add_component(guy, components.Image("NPC3.png"))
-        self.world.add_component(guy, components.Flammable(False))
-        self.world.add_component(guy, components.Size(80, 80))
-        self.world.add_component(guy, components.Audio("grunt"))
-
-        def puzzle_complete():
-            complaint = self.world.create_entity()
-            image = self.font.render("Way to take your time.", False, (255, 128, 0))
-            self.world.add_component(complaint, components.Position(500, 500))
-            self.world.add_component(complaint, components.Image(image=image))
-            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
-            self.world.add_component(complaint, components.Delay(3, next_scene))
-
-        cat = self.world.create_entity()
-        self.world.add_component(cat, components.Position(1190, 560))
-        self.world.add_component(cat, components.Velocity(0,0))
-        self.world.add_component(cat, components.Image("Cat.png"))
-        self.world.add_component(cat, components.Flammable(False))
-        self.world.add_component(cat, components.Size(80, 80))
-        self.world.add_component(cat, components.Audio("light"))
-
-        bubble = self.world.create_entity()
-        self.world.add_component(bubble, components.Position(1000, 100))
-        self.world.add_component(bubble, components.Image("speech.png"))
-        self.world.add_component(bubble, components.Size(307, 173))
-        self.world.add_component(bubble, components.Hang())
-        image = self.world.component_for_entity(bubble, components.Image).image
-        util.drawText(image, "My barn is dusty and full of cobwebs. NaN! Come here and do this for me.", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
-
-        def next_scene():
-            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneThree()))
-
-        def fade_out():
-            for ent, i in self.world.get_component(components.Image):
-                self.world.add_component(ent, components.ChangeAlpha(0, 1))
-            for ent, a in self.world.get_component(components.Animation):
-                self.world.add_component(ent, components.ChangeAlpha(0, 1))
-
-        self.world.add_processor(processors.RenderProcessor())
-        self.world.add_processor(processors.InputProcessor(), priority=10)
-        self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
-        self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 25), priority=25)
-        self.world.add_processor(processors.Scene2Processor(player), priority=30)
+        self.world.add_processor(processors.PlayerProcessor(player, 40), priority=25)

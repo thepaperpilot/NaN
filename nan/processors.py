@@ -426,6 +426,8 @@ class TextProcessor(esper.Processor):
                 self.callback()
 
 class Scene1Processor(esper.Processor):
+    moved = False
+
     def __init__(self, player, tutorial, font):
         esper.Processor.__init__(self)
         self.player = player
@@ -439,17 +441,16 @@ class Scene1Processor(esper.Processor):
 
         for event in filtered_events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
+                if self.moved and event.key == pygame.K_e:
                     image = self.font.render("aim your mouse and click to throw", False, (32, 255, 128))
                     self.world.component_for_entity(self.tutorial, components.Image).image = image
                     imgs = self.world.component_for_entity(self.tutorial, components.Size)
                     imgs.width = image.get_width()
                     imgs.height = image.get_height()
-
-class Scene2Processor(esper.Processor):
-    def __init__(self, player):
-        esper.Processor.__init__(self)
-        self.player = player
-
-    def process(self, filtered_events, pressed_keys, dt, screen):
-        pass
+                elif not self.moved and event.key in [pygame.K_w, pygame.K_a, pygame.K_d, pygame.K_UP, pygame.K_LEFT, pygame.K_RIGHT]:
+                    image = self.font.render("press E to pick up your sword", False, (32, 255, 128))
+                    self.world.component_for_entity(self.tutorial, components.Image).image = image
+                    imgs = self.world.component_for_entity(self.tutorial, components.Size)
+                    imgs.width = image.get_width()
+                    imgs.height = image.get_height()
+                    self.moved = True
