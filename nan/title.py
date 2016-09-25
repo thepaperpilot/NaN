@@ -191,7 +191,7 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene5, components.Image("HouseSceneBlacksmithBG.png"))
         self.world.add_component(scene5, components.Size(320, 180))
         self.world.add_component(scene5, components.Reactive())
-        self.world.add_component(scene5, components.Click(open_scene, game.SceneFour()))
+        self.world.add_component(scene5, components.Click(open_scene, game.SceneFive()))
 
         label5 = self.world.create_entity()
         image = self.font.render("5", False, (0, 128, 0))
@@ -206,7 +206,7 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene6, components.Image("HouseScene1BG.png"))
         self.world.add_component(scene6, components.Size(320, 180))
         self.world.add_component(scene6, components.Reactive())
-        self.world.add_component(scene6, components.Click(open_scene, game.SceneFour()))
+        self.world.add_component(scene6, components.Click(open_scene, game.SceneSix()))
 
         label6 = self.world.create_entity()
         image = self.font.render("6", False, (0, 128, 0))
