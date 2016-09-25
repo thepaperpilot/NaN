@@ -116,12 +116,6 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(player, components.Size(80, 80))
         self.world.add_component(player, components.Player(image, animation, carry_image, carry_animation))
 
-        sword = self.world.create_entity()
-        self.world.add_component(sword, components.Position(300, 500))
-        self.world.add_component(sword, components.Velocity(0, 0))
-        self.world.add_component(sword, components.Image("sword.png"))
-        self.world.add_component(sword, components.Size(80, 80))
-
         floor2 = self.world.create_entity()
         self.world.add_component(floor2, components.Position(520, 390))
         self.world.add_component(floor2, components.Platform())
@@ -136,20 +130,74 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(stair, components.Size(240, 40))
         self.world.add_component(stair, components.Background())
 
+        bed = self.world.create_entity()
+        self.world.add_component(bed, components.Position(260, 320))
+        self.world.add_component(bed, components.Velocity(0, 0))
+        self.world.add_component(bed, components.Image("Bed.png"))
+        self.world.add_component(bed, components.Size(160, 80))
+
+        bookshelf = self.world.create_entity()
+        self.world.add_component(bookshelf, components.Position(420, 280))
+        self.world.add_component(bookshelf, components.Velocity(0, 0))
+        self.world.add_component(bookshelf, components.Image("Bookshelf.png"))
+        self.world.add_component(bookshelf, components.Size(80, 160))
+
+        chest = self.world.create_entity()
+        self.world.add_component(chest, components.Position(540, 320))
+        self.world.add_component(chest, components.Velocity(0, 0))
+        self.world.add_component(chest, components.Image("Chest.png"))
+        self.world.add_component(chest, components.Size(80, 80))
+
+        guy = self.world.create_entity()
+        self.world.add_component(guy, components.Position(280, 560))
+        self.world.add_component(guy, components.Velocity(0, 0))
+        self.world.add_component(guy, components.Image("NPC1.png"))
+        self.world.add_component(guy, components.Size(80, 80))
+
+        leftChair = self.world.create_entity()
+        self.world.add_component(leftChair, components.Position(430, 560))
+        self.world.add_component(leftChair, components.Velocity(0, 0))
+        self.world.add_component(leftChair, components.Image("Chair.png"))
+        self.world.add_component(leftChair, components.Size(80, 80))
+
+        rightChair = self.world.create_entity()
+        self.world.add_component(rightChair, components.Position(610, 560))
+        self.world.add_component(rightChair, components.Velocity(0, 0))
+        self.world.add_component(rightChair, components.Image("Chair.png"))
+        self.world.add_component(rightChair, components.Size(80, 80))
+
+        table = self.world.create_entity()
+        self.world.add_component(table, components.Position(520, 560))
+        self.world.add_component(table, components.Velocity(0, 0))
+        self.world.add_component(table, components.Image("Table.png"))
+        self.world.add_component(table, components.Size(80, 80))
+
+        books = self.world.create_entity()
+        self.world.add_component(books, components.Position(760, 560))
+        self.world.add_component(books, components.Velocity(0, 0))
+        self.world.add_component(books, components.Image("PileOfBooks.png"))
+        self.world.add_component(books, components.Size(80, 80))
+        self.world.add_component(books, components.Touch(bookshelf, puzzle_complete)))
+
+        lamp = self.world.create_entity()
+        self.world.add_component(lamp, components.Position(760, 170))
+        self.world.add_component(lamp, components.Image("Chandelier.png"))
+        self.world.add_component(lamp, components.Size(80, 80))
+
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
 
-        def dragon_hit():
+        def puzzle_complete():
             self.world.component_for_entity(dragon, components.Animation).frame = 1
-            damage = self.world.create_entity()
-            image = self.font.render("999,999,999,999,999,999", False, (255, 128, 0))
-            self.world.add_component(damage, components.Position(960, 320))
-            self.world.add_component(damage, components.Image(image=image))
-            self.world.add_component(damage, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(damage, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(damage, components.ChangeAlpha(0, 2))
-            self.world.add_component(damage, components.Delay(3, next_scene))
+            complaint = self.world.create_entity()
+            image = self.font.render("Way to take your time.", False, (255, 128, 0))
+            self.world.add_component(complaint, components.Position(500, 500))
+            self.world.add_component(complaint, components.Image(image=image))
+            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
+            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
+            self.world.add_component(complaint, components.Delay(3, next_scene))
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):
