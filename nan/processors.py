@@ -229,7 +229,7 @@ class PhysicsProcessor(esper.Processor):
             for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
                 if (tl.x - box.width / 2) < p.x < (tl.x + box.width / 2) and (tl.y - box.height) < p.y < tl.y:
                     if v.y > 0:
-                        p.y = min((tl.y - box.height), p.y)
+                        p.y = min(((tl.y - box.height) - s.height / 2), p.y)
                     v.y = min(0, v.y)
 
 class AnimationProcessor(esper.Processor):
