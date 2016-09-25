@@ -7,6 +7,7 @@ import random
 import text
 import os
 import util
+import title
 
 def get_player(world):
     player = world.create_entity()
@@ -916,7 +917,8 @@ class SceneSix(scenebase.SceneBase):
         util.drawText(image, "About time you got here, NaN. I need my coffee stat! It's probably been sitting there for hours!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
-            self.switch_to_scene(text.TextScene("NaN was unsure how much longer he could go on like this. He still wanted to help people, but was filled with thoughts of inadequacy and self doubt.", SceneOne()))
+            #self.switch_to_scene(text.TextScene("NaN was unsure how much longer he could go on like this. He still wanted to help people, but was filled with thoughts of inadequacy and self doubt.", SceneSeven()))
+            self.switch_to_scene(text.TextScene("Eventually he'd had enough. There was no way he could go back to adventuring, but he similarly could not stop here. He began a new journey, leaving his town without a single goodbye. Thanks for playing.", title.TitleScene()))
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):
