@@ -56,7 +56,7 @@ class Audio:
         if file:
             self.sound = pygame.mixer.Sound(os.path.join('audio', file))
         else:
-            self.sound = sound        
+            self.sound = sound
 
 class Animation:
     time = 0
@@ -176,5 +176,9 @@ class Delay:
         self.args = args
 
 class Platform:
+    def __init__(self):
+        pass
+
+class Hang:
     def __init__(self):
         pass

@@ -70,7 +70,7 @@ class SceneOne(scenebase.SceneBase):
         self.world.add_component(dragon, components.Velocity(0, 0))
         self.world.add_component(dragon, components.Animation("dragon.png", splitx=640, frame=0))
         self.world.add_component(dragon, components.Size(640, 640))
-        self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(320, 0, -320, 0)))
+        self.world.add_component(dragon, components.Touch(sword, dragon_hit, rect=pygame.Rect(160, 0, -320, 0)))
 
         def move_up(entity):
             self.world.add_component(entity, components.ChangePosition((640, 640), 1, interpolation.Smooth(), move_down, entity))
@@ -195,13 +195,15 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(books, components.Velocity(0, 0))
         self.world.add_component(books, components.Image("PileOfBooks.png"))
         self.world.add_component(books, components.Size(80, 80))
-        self.world.add_component(books, components.Touch(bookshelf, puzzle_complete))
+        self.world.add_component(books, components.Touch(bookshelf, puzzle_complete, rect=pygame.Rect(5, 0, -10, 0)))
         self.world.add_component(books, components.Audio("light"))
+
 
         lamp = self.world.create_entity()
         self.world.add_component(lamp, components.Position(760, 170))
         self.world.add_component(lamp, components.Image("Chandelier.png"))
         self.world.add_component(lamp, components.Size(80, 80))
+        self.world.add_component(lamp, components.Hang())
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))

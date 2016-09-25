@@ -210,9 +210,9 @@ class PhysicsProcessor(esper.Processor):
 
             else:
                 p.y -= v.y * dt
-
+        #Touch Physics
         for ent, (t, p, s)  in self.world.get_components(components.Touch, components.Position, components.Size):
-            rect = pygame.Rect(p.x - s.width / 2 + t.rect.x, p.y - s.height / 2 + t.rect.y, s.width + t.rect.width, s.height + t.rect.height)
+            rect = pygame.Rect(p.x + t.rect.x, p.y + s.height / 2 + t.rect.y, s.width + t.rect.width, s.height + t.rect.height)
             tp = self.world.component_for_entity(t.target, components.Position)
             ts = self.world.component_for_entity(t.target, components.Size)
             if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
@@ -225,11 +225,18 @@ class PhysicsProcessor(esper.Processor):
             else:
                 t.active = False
 
+        for hangEnt, (h, p, s) in self.world.get_components(components.Hang, components.Position, components.Size):
+            rect = pygame.Rect(p.x, p.y + s.height / 2, s.width, s.height)
+            for ent, (v, tp, ts) in self.world.get_components(components.Velocity, components.Position, components.Size):
+                if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
+                    self.world.remove_component(hangEnt, components.Hang)
+                    self.world.add_component(hangEnt, components.Velocity(0,0))
+        #Platform physics
         for platEnt, (tl, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
             for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):
-                if (tl.x - box.width / 2) < p.x < (tl.x + box.width / 2) and (tl.y - box.height) < p.y < tl.y:
+                if (tl.x - box.width / 2) < p.x < (tl.x + box.width / 2) and (tl.y - box.height) < (p.y + s.height / 2) - 20 < tl.y:
                     if v.y > 0:
-                        p.y = min((tl.y - box.height), p.y)
+                        p.y = min(((tl.y - box.height) - s.height / 2) + 20, p.y)
                     v.y = min(0, v.y)
 
 class AnimationProcessor(esper.Processor):
