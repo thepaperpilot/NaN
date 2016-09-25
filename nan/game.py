@@ -250,7 +250,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 95), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
 class SceneThree(scenebase.SceneBase):
@@ -260,6 +260,10 @@ class SceneThree(scenebase.SceneBase):
     def init(self):
         self.font = pygame.font.Font("kenpixel.ttf", 42)
         self.small_font = pygame.font.Font("kenpixel.ttf", 16)
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.fadeout(100)
+        pygame.mixer.music.load('audio/Retro Comedy.ogg')
+        pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -482,12 +486,12 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_component(workbench, components.Audio("heavy"))
 
         bubble = self.world.create_entity()
-        self.world.add_component(bubble, components.Position(300, 100))
+        self.world.add_component(bubble, components.Position(100, 300))
         self.world.add_component(bubble, components.Image("speech.png"))
         self.world.add_component(bubble, components.Size(307, 173))
         self.world.add_component(bubble, components.Hang())
         image = self.world.component_for_entity(bubble, components.Image).image
-        util.drawText(image, "Help me find my vase etc-", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+        util.drawText(image, "Shoot, now where did that vase go? NaN, you touched it last. You need to find it for me!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneFour()))
@@ -502,7 +506,7 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 85), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
 class SceneFour(scenebase.SceneBase):
@@ -512,6 +516,10 @@ class SceneFour(scenebase.SceneBase):
     def init(self):
         self.font = pygame.font.Font("kenpixel.ttf", 42)
         self.small_font = pygame.font.Font("kenpixel.ttf", 16)
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.fadeout(100)
+        pygame.mixer.music.load('audio/Retro Beat.ogg')
+        pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -635,19 +643,20 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(fireplace, components.Image("Fireplace.png"))
         self.world.add_component(fireplace, components.Flammable(True))
         self.world.add_component(fireplace, components.Size(160, 160))
+        self.world.add_component(fireplace, components.Velocity(0, 0))
 
         shelf = self.world.create_entity()
         self.world.add_component(shelf, components.Position(250, 210))
-        self.world.add_component(shelf, components.Image("Shelf.png"))
+        self.world.add_component(shelf, components.Image("shelf.png"))
         self.world.add_component(shelf, components.Size(80, 20))
 
         bubble = self.world.create_entity()
-        self.world.add_component(bubble, components.Position(1000, 100))
+        self.world.add_component(bubble, components.Position(1100, 400))
         self.world.add_component(bubble, components.Image("speech.png"))
         self.world.add_component(bubble, components.Size(307, 173))
         self.world.add_component(bubble, components.Hang())
         image = self.world.component_for_entity(bubble, components.Image).image
-        util.drawText(image, "Ah! NaN, just in time! I need your help putting my books away. They are very important!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+        util.drawText(image, "About time you got here, NaN. I need my coffee stat! It's probably been sitting there for hours!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
@@ -662,5 +671,5 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 70), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)

@@ -425,7 +425,6 @@ class TextProcessor(esper.Processor):
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 self.callback()
 
-
 class Scene1Processor(esper.Processor):
     def __init__(self, player, tutorial, font):
         esper.Processor.__init__(self)
