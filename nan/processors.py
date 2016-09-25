@@ -82,6 +82,7 @@ class InputProcessor(esper.Processor):
                     mousey *= 720 / pygame.display.get_surface().get_height()
                     p.x = r.x + (r.x - mousex) / 10
                     p.y = r.y + (r.y - mousey) / 10
+                    s.scale = 100 / min(400, max(100, math.sqrt((r.x - mousex) ** 2 + (r.y - mousey) ** 2)))
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 x *= 1280 / pygame.display.get_surface().get_width()
@@ -161,6 +162,12 @@ class PlayerProcessor(esper.Processor):
                                 elif self.world.has_component(self.player, components.Animation):
                                     self.world.remove_component(self.player, components.Animation)
                                     self.world.add_component(self.player, p.carry_animation)
+                                if self.world.has_component(ent, components.RotationalVelocity):
+                                    r = self.world.component_for_entity(ent, components.RotationalVelocity)
+                                    i.image = r.image
+                                    s.width = r.width
+                                    s.height = r.height
+                                    self.world.remove_component(ent, components.RotationalVelocity)
                                 i.image = pygame.transform.rotate(i.image, 90)
                                 tmp = s.width
                                 s.width = s.height
@@ -248,6 +255,7 @@ class PhysicsProcessor(esper.Processor):
                     if rect.colliderect(pygame.Rect(tp.x, tp.y, ts.width, ts.height)):
                         self.world.remove_component(hangEnt, components.Hang)
                         self.world.add_component(hangEnt, components.Velocity(0,0))
+                        break
         #Platform physics
         for platEnt, (tl, box, pf) in self.world.get_components(components.Position, components.Size, components.Platform):
             for ent, (p, s, v) in self.world.get_components(components.Position, components.Size, components.Velocity):

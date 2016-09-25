@@ -5,6 +5,7 @@ import processors
 import interpolation
 import text
 import game
+import math
 
 class TitleScene(scenebase.SceneBase):
     def __init__(self):
@@ -15,9 +16,8 @@ class TitleScene(scenebase.SceneBase):
         self.titlefont = pygame.font.Font("kenpixel.ttf", 144)
 
         def start_game():
-            for ent in [start, quitbutton, title]:
-                pos = self.world.component_for_entity(ent, components.Position)
-                self.world.add_component(ent, components.ChangePosition((pos.x, pos.y + 100), .25))
+            for ent, (p, i) in self.world.get_components(components.Position, components.Image):
+                self.world.add_component(ent, components.ChangePosition((p.x, p.y + 100), .25))
                 self.world.add_component(ent, components.ChangeAlpha(0, .25))
             def change_scene():
                 self.switch_to_scene(text.TextScene("This is the story of an adventurer named NaN, known across the land for his unwavering enthusiasm for helping anyone with anything. 3 years ago he even protected his hometown from a vicious wandering dragon...", game.SceneOne()))
@@ -34,7 +34,6 @@ class TitleScene(scenebase.SceneBase):
             size = self.world.component_for_entity(entity, components.Size)
             size.width = image.get_width()
             size.height = image.get_height()
-            self.world.add_component(entity, components.ChangeSize(1, .25, interpolation.Smooth()))
 
         def lowlight(entity):
             t = self.world.component_for_entity(entity, components.Text)
@@ -43,7 +42,6 @@ class TitleScene(scenebase.SceneBase):
             size = self.world.component_for_entity(entity, components.Size)
             size.width = image.get_width()
             size.height = image.get_height()
-            self.world.add_component(entity, components.ChangeSize(.75, .25, interpolation.Smooth()))
 
         start = self.world.create_entity()
         image = self.font.render("start", False, (0, 128, 0))
@@ -53,7 +51,7 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_component(start, components.Size(image.get_width(), image.get_height(), .75))
         self.world.add_component(start, components.Click(start_game))
         self.world.add_component(start, components.Over(highlight, lowlight))
-        #self.world.add_component(start, components.Reactive())
+        self.world.add_component(start, components.Reactive())
         self.world.add_component(start, components.Audio("click"))
 
         quitbutton = self.world.create_entity()
@@ -64,7 +62,7 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_component(quitbutton, components.Size(image.get_width(), image.get_height(), .75))
         self.world.add_component(quitbutton, components.Click(quit_game))
         self.world.add_component(quitbutton, components.Over(highlight, lowlight))
-        #self.world.add_component(quitbutton, components.Reactive())
+        self.world.add_component(quitbutton, components.Reactive())
         self.world.add_component(quitbutton, components.Audio("click"))
 
         title = self.world.create_entity()
@@ -121,3 +119,4 @@ class TitleScene(scenebase.SceneBase):
             mousey *= 720 / pygame.display.get_surface().get_height()
             p.x = r.x + (r.x - mousex) / 10
             p.y = r.y + (r.y - mousey) / 10
+            s.scale = 100 / max(100, math.sqrt((r.x - mousex) ** 2 + (r.y - mousey) ** 2))

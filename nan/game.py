@@ -94,10 +94,10 @@ class SceneOne(scenebase.SceneBase):
             cloud = self.world.create_entity()
             clouds.append(cloud)
             self.world.add_component(cloud, components.Position(random.randrange(100, 1180), random.randrange(75, 200)))
-            #self.world.add_component(cloud, components.Image("cloud.png", blend=pygame.BLEND_RGBA_MAX))
-            self.world.add_component(cloud, components.Image("cloud.png"))
+            self.world.add_component(cloud, components.Image("cloud.png", blend=pygame.BLEND_RGBA_MAX))
             self.world.add_component(cloud, components.Size(160, 80))
             self.world.add_component(cloud, components.Background())
+            self.world.add_component(cloud, components.Hang())
 
         self.world.add_processor(processors.RenderProcessor())
         self.world.add_processor(processors.InputProcessor(), priority=10)
