@@ -134,8 +134,8 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene1, components.Click(open_scene, game.SceneOne()))
 
         label1 = self.world.create_entity()
-        image = self.font.render("Scene 1", False, (0, 128, 0))
-        self.world.add_component(label1, components.Position(300, 220))
+        image = self.font.render("1", False, (0, 128, 0))
+        self.world.add_component(label1, components.Position(300, 170))
         self.world.add_component(label1, components.Image(image=image))
         self.world.add_component(label1, components.Size(image.get_width(), image.get_height()))
         self.world.add_component(label1, components.Reactive())
@@ -149,8 +149,8 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene2, components.Click(open_scene, game.SceneTwo()))
 
         label2 = self.world.create_entity()
-        image = self.font.render("Scene 2", False, (0, 128, 0))
-        self.world.add_component(label2, components.Position(980, 220))
+        image = self.font.render("2", False, (0, 128, 0))
+        self.world.add_component(label2, components.Position(980, 170))
         self.world.add_component(label2, components.Image(image=image))
         self.world.add_component(label2, components.Size(image.get_width(), image.get_height()))
         self.world.add_component(label2, components.Reactive())
@@ -164,8 +164,8 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene3, components.Click(open_scene, game.SceneThree()))
 
         label3 = self.world.create_entity()
-        image = self.font.render("Scene 3", False, (0, 128, 0))
-        self.world.add_component(label3, components.Position(300, 470))
+        image = self.font.render("3", False, (0, 128, 0))
+        self.world.add_component(label3, components.Position(300, 420))
         self.world.add_component(label3, components.Image(image=image))
         self.world.add_component(label3, components.Size(image.get_width(), image.get_height()))
         self.world.add_component(label3, components.Reactive())
@@ -179,8 +179,8 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene4, components.Click(open_scene, game.SceneFour()))
 
         label4 = self.world.create_entity()
-        image = self.font.render("Scene 4", False, (0, 128, 0))
-        self.world.add_component(label4, components.Position(980, 470))
+        image = self.font.render("4", False, (0, 128, 0))
+        self.world.add_component(label4, components.Position(980, 420))
         self.world.add_component(label4, components.Image(image=image))
         self.world.add_component(label4, components.Size(image.get_width(), image.get_height()))
         self.world.add_component(label4, components.Reactive())

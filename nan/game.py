@@ -16,7 +16,7 @@ def get_player(world):
     carry_animation = components.Animation("playerCarrySimple.png", splitx=80, framelength=.1)
     jump = components.Audio("jump.ogg")
     throw = components.Audio("throw")
-    world.add_component(player, components.Position(100, 100))
+    world.add_component(player, components.Position(100, 560))
     world.add_component(player, components.Velocity(0, 0))
     world.add_component(player, image)
     world.add_component(player, components.Size(80, 80))
@@ -44,7 +44,7 @@ class SceneOne(scenebase.SceneBase):
         player = get_player(self.world)
 
         sword = self.world.create_entity()
-        self.world.add_component(sword, components.Position(300, 500))
+        self.world.add_component(sword, components.Position(300, 560))
         self.world.add_component(sword, components.Velocity(0, 0))
         self.world.add_component(sword, components.Image("sword.png"))
         self.world.add_component(sword, components.Size(80, 80))
@@ -139,9 +139,9 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(stair, components.Image("WoodPlatform1.png"))
         self.world.add_component(stair, components.Size(240, 40))
         self.world.add_component(stair, components.Background())
-        #300
+        
         bed = self.world.create_entity()
-        self.world.add_component(bed, components.Position(260, 20))
+        self.world.add_component(bed, components.Position(260, 330))
         self.world.add_component(bed, components.Velocity(0, 0))
         self.world.add_component(bed, components.Image("Bed.png"))
         self.world.add_component(bed, components.Flammable(False))
@@ -149,7 +149,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bed, components.Audio("heavy"))
 
         bookshelf = self.world.create_entity()
-        self.world.add_component(bookshelf, components.Position(420, -20))
+        self.world.add_component(bookshelf, components.Position(420, 290))
         self.world.add_component(bookshelf, components.Velocity(0, 0))
         self.world.add_component(bookshelf, components.Image("Bookshelf.png"))
         self.world.add_component(bookshelf, components.Flammable(False))
@@ -157,7 +157,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(bookshelf, components.Audio("heavy"))
 
         chest = self.world.create_entity()
-        self.world.add_component(chest, components.Position(540, 20))
+        self.world.add_component(chest, components.Position(540, 330))
         self.world.add_component(chest, components.Velocity(0, 0))
         self.world.add_component(chest, components.Image("chest.png"))
         self.world.add_component(chest, components.Flammable(False))
@@ -250,7 +250,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 95), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
 class SceneThree(scenebase.SceneBase):
@@ -260,6 +260,10 @@ class SceneThree(scenebase.SceneBase):
     def init(self):
         self.font = pygame.font.Font("kenpixel.ttf", 42)
         self.small_font = pygame.font.Font("kenpixel.ttf", 16)
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.fadeout(100)
+        pygame.mixer.music.load('audio/Retro Comedy.ogg')
+        pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -342,13 +346,13 @@ class SceneThree(scenebase.SceneBase):
 
         def puzzle_complete():
             complaint = self.world.create_entity()
-            image = self.font.render("Way to take your time.", False, (255, 128, 0))
-            self.world.add_component(complaint, components.Position(500, 500))
+            image = self.font.render("Way to take your time.", False, (0, 0, 0))
+            self.world.add_component(complaint, components.Position(640, 500))
             self.world.add_component(complaint, components.Image(image=image))
             self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
-            self.world.add_component(complaint, components.Delay(3, next_scene))
+            self.world.add_component(complaint, components.ChangePosition((640, 250), 4, interpolation.Smooth(), fade_out))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 4))
+            self.world.add_component(complaint, components.Delay(5, next_scene))
 
         def open_chest():
             if chest is not None:
@@ -478,12 +482,12 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_component(workbench, components.Audio("heavy"))
 
         bubble = self.world.create_entity()
-        self.world.add_component(bubble, components.Position(300, 100))
+        self.world.add_component(bubble, components.Position(200, 100))
         self.world.add_component(bubble, components.Image("speech.png"))
         self.world.add_component(bubble, components.Size(307, 173))
         self.world.add_component(bubble, components.Hang())
         image = self.world.component_for_entity(bubble, components.Image).image
-        util.drawText(image, "Help me find my vase etc-", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+        util.drawText(image, "Shoot, now where did that vase go? NaN, you touched it last. You need to find it for me!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneFour()))
@@ -498,7 +502,7 @@ class SceneThree(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 85), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
 class SceneFour(scenebase.SceneBase):
@@ -508,6 +512,10 @@ class SceneFour(scenebase.SceneBase):
     def init(self):
         self.font = pygame.font.Font("kenpixel.ttf", 42)
         self.small_font = pygame.font.Font("kenpixel.ttf", 16)
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.fadeout(100)
+        pygame.mixer.music.load('audio/Retro Beat.ogg')
+        pygame.mixer.music.play(-1)
 
         bg = self.world.create_entity()
         self.world.add_component(bg, components.Position(640, 360))
@@ -532,7 +540,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(stair, components.Background())
 
         bed = self.world.create_entity()
-        self.world.add_component(bed, components.Position(520, 320))
+        self.world.add_component(bed, components.Position(520, 330))
         self.world.add_component(bed, components.Velocity(0, 0))
         self.world.add_component(bed, components.Image("Bed.png"))
         self.world.add_component(bed, components.Flammable(False))
@@ -540,7 +548,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(bed, components.Audio("heavy"))
 
         bed2 = self.world.create_entity()
-        self.world.add_component(bed2, components.Position(760, 320))
+        self.world.add_component(bed2, components.Position(760, 330))
         self.world.add_component(bed2, components.Velocity(0, 0))
         self.world.add_component(bed2, components.Image("Bed.png"))
         self.world.add_component(bed2, components.Flammable(False))
@@ -566,7 +574,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.component_for_entity(bed4, components.Image).image = pygame.transform.flip(self.world.component_for_entity(bed4, components.Image).image, False, False)
 
         guy = self.world.create_entity()
-        self.world.add_component(guy, components.Position(1000, 560))
+        self.world.add_component(guy, components.Position(1000, 460))
         self.world.add_component(guy, components.Velocity(0, 0))
         self.world.add_component(guy, components.Image("NPC2.png"))
         self.world.add_component(guy, components.Flammable(False))
@@ -583,20 +591,20 @@ class SceneFour(scenebase.SceneBase):
 
         def puzzle_complete():
             complaint = self.world.create_entity()
-            self.world.add_component(complaint, components.Position(500, 500))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
+            self.world.add_component(complaint, components.Position(640, 500))
+            self.world.add_component(complaint, components.ChangeAlpha(0, 4))
             if(self.world.component_for_entity(mug, components.Flammable).lit):
                 for ent, p in self.world.get_component(components.Player):
                     if p.holding is mug:
                         p.holding = None
                 self.world.delete_entity(mug)
-                image = self.font.render("Way to take your time.", False, (255, 128, 0))
+                image = self.font.render("Way to take your time.", False, (0, 0, 0))
                 self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
                 self.world.add_component(complaint, components.Image(image=image))
-                self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-                self.world.add_component(complaint, components.Delay(3, next_scene))
+                self.world.add_component(complaint, components.ChangePosition((640, 250), 4, interpolation.Smooth(), fade_out))
+                self.world.add_component(complaint, components.Delay(5, next_scene))
             else:
-                image = self.font.render("It's cold! Heat it up for me.", False, (255, 128, 0))
+                image = self.font.render("It's cold! Heat it up for me.", False, (0, 0, 0))
                 self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
                 self.world.add_component(complaint, components.Image(image=image))
 
@@ -631,10 +639,11 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(fireplace, components.Image("Fireplace.png"))
         self.world.add_component(fireplace, components.Flammable(True))
         self.world.add_component(fireplace, components.Size(160, 160))
+        self.world.add_component(fireplace, components.Velocity(0, 0))
 
         shelf = self.world.create_entity()
         self.world.add_component(shelf, components.Position(250, 210))
-        self.world.add_component(shelf, components.Image("Shelf.png"))
+        self.world.add_component(shelf, components.Image("shelf.png"))
         self.world.add_component(shelf, components.Size(80, 20))
 
         bubble = self.world.create_entity()
@@ -643,7 +652,7 @@ class SceneFour(scenebase.SceneBase):
         self.world.add_component(bubble, components.Size(307, 173))
         self.world.add_component(bubble, components.Hang())
         image = self.world.component_for_entity(bubble, components.Image).image
-        util.drawText(image, "Ah! NaN, just in time! I need your help putting my books away. They are very important!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
+        util.drawText(image, "About time you got here, NaN. I need my coffee stat! It's probably been sitting there for hours!", (255, 255, 255), pygame.Rect(30, 20, 246, 134), self.small_font)
 
         def next_scene():
             self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneFive()))
@@ -896,5 +905,5 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_processor(processors.InputProcessor(), priority=10)
         self.world.add_processor(processors.PhysicsProcessor(600), priority=5)
         self.world.add_processor(processors.AnimationProcessor(), priority=5)
-        self.world.add_processor(processors.PlayerProcessor(player, 80), priority=25)
+        self.world.add_processor(processors.PlayerProcessor(player, 70), priority=25)
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
