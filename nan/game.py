@@ -139,7 +139,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(stair, components.Image("WoodPlatform1.png"))
         self.world.add_component(stair, components.Size(240, 40))
         self.world.add_component(stair, components.Background())
-        
+
         bed = self.world.create_entity()
         self.world.add_component(bed, components.Position(260, 330))
         self.world.add_component(bed, components.Velocity(0, 0))
@@ -767,6 +767,9 @@ class SceneFive(scenebase.SceneBase):
         self.world.add_processor(processors.Scene2Processor(player), priority=30)
 
 class SceneSix(scenebase.SceneBase):
+
+    count = 0
+
     def __init__(self):
         scenebase.SceneBase.__init__(self)
 
@@ -786,6 +789,23 @@ class SceneSix(scenebase.SceneBase):
 
         player = get_player(self.world)
 
+        floor = self.world.create_entity()
+        self.world.add_component(floor, components.Position(640, 560))
+        self.world.add_component(floor, components.Size(1280, 80))
+        self.world.add_component(floor, components.Image("box1.png"))
+
+        def spider_tally():
+            self.count += 1
+            if self.count > 4:
+                complaint = self.world.create_entity()
+                image = self.font.render("Way to take your time.", False, (255, 128, 0))
+                self.world.add_component(complaint, components.Position(500, 500))
+                self.world.add_component(complaint, components.Image(image=image))
+                self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
+                self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
+                self.world.add_component(complaint, components.ChangeAlpha(0, 2))
+                self.world.add_component(complaint, components.Delay(3, next_scene))
+
         spider = self.world.create_entity()
         self.world.add_component(spider, components.Position(200, 320))
         self.world.add_component(spider, components.Hang())
@@ -793,6 +813,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(spider, components.Flammable(False))
         self.world.add_component(spider, components.Size(80, 80))
         self.world.add_component(spider, components.Audio("light"))
+        self.world.add_component(spider, components.Touch(floor, spider_tally))
 
         spider2 = self.world.create_entity()
         self.world.add_component(spider2, components.Position(280, 240))
@@ -801,6 +822,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(spider2, components.Flammable(False))
         self.world.add_component(spider2, components.Size(80, 80))
         self.world.add_component(spider2, components.Audio("light"))
+        self.world.add_component(spider2, components.Touch(floor, spider_tally))
 
         spider3 = self.world.create_entity()
         self.world.add_component(spider3, components.Position(420, 230))
@@ -809,6 +831,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(spider3, components.Flammable(False))
         self.world.add_component(spider3, components.Size(80, 80))
         self.world.add_component(spider3, components.Audio("light"))
+        self.world.add_component(spider3, components.Touch(floor, spider_tally))
 
         spider4 = self.world.create_entity()
         self.world.add_component(spider4, components.Position(440, 400))
@@ -817,6 +840,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(spider4, components.Flammable(False))
         self.world.add_component(spider4, components.Size(80, 80))
         self.world.add_component(spider4, components.Audio("light"))
+        self.world.add_component(spider4, components.Touch(floor, spider_tally))
 
         spider5 = self.world.create_entity()
         self.world.add_component(spider5, components.Position(590, 300))
@@ -825,6 +849,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(spider5, components.Flammable(False))
         self.world.add_component(spider5, components.Size(80, 80))
         self.world.add_component(spider5, components.Audio("light"))
+        self.world.add_component(spider5, components.Touch(floor, spider_tally))
 
         spider6 = self.world.create_entity()
         self.world.add_component(spider6, components.Position(680, 170))
@@ -833,6 +858,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(spider6, components.Flammable(False))
         self.world.add_component(spider6, components.Size(80, 80))
         self.world.add_component(spider6, components.Audio("light"))
+        self.world.add_component(spider6, components.Touch(floor, spider_tally))
 
         spider7 = self.world.create_entity()
         self.world.add_component(spider7, components.Position(760, 390))
@@ -841,6 +867,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(spider7, components.Flammable(False))
         self.world.add_component(spider7, components.Size(80, 80))
         self.world.add_component(spider7, components.Audio("light"))
+        self.world.add_component(spider7, components.Touch(floor, spider_tally))
 
         spider8 = self.world.create_entity()
         self.world.add_component(spider8, components.Position(830, 230))
@@ -849,6 +876,7 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(spider8, components.Flammable(False))
         self.world.add_component(spider8, components.Size(80, 80))
         self.world.add_component(spider8, components.Audio("light"))
+        self.world.add_component(spider8, components.Touch(floor, spider_tally))
 
         box = self.world.create_entity()
         self.world.add_component(box, components.Position(520, 560))
@@ -865,16 +893,6 @@ class SceneSix(scenebase.SceneBase):
         self.world.add_component(guy, components.Flammable(False))
         self.world.add_component(guy, components.Size(80, 80))
         self.world.add_component(guy, components.Audio("grunt"))
-
-        def puzzle_complete():
-            complaint = self.world.create_entity()
-            image = self.font.render("Way to take your time.", False, (255, 128, 0))
-            self.world.add_component(complaint, components.Position(500, 500))
-            self.world.add_component(complaint, components.Image(image=image))
-            self.world.add_component(complaint, components.Size(image.get_width(), image.get_height()))
-            self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
-            self.world.add_component(complaint, components.ChangeAlpha(0, 2))
-            self.world.add_component(complaint, components.Delay(3, next_scene))
 
         cat = self.world.create_entity()
         self.world.add_component(cat, components.Position(1190, 560))
