@@ -376,7 +376,7 @@ class SceneFour(scenebase.SceneBase):
 
         def spider_tally():
             self.count += 1
-            if self.count > 3:
+            if self.count == 3:
                 puzzle_complete()
 
         spider = self.world.create_entity()
@@ -875,8 +875,8 @@ class SceneSix(scenebase.SceneBase):
             self.world.add_component(complaint, components.Position(640, 500))
             self.world.add_component(complaint, components.ChangeAlpha(0, 4, interpolation.Smooth()))
             self.world.add_component(complaint, components.Image("speech.png"))
-            self.world.add_component(bubble, components.Size(307, 173))
-            if(self.world.component_for_entity(mug, components.Flammable).lit):
+            self.world.add_component(complaint, components.Size(307, 173))
+            if self.world.component_for_entity(mug, components.Flammable).lit:
                 p = self.world.component_for_entity(player, components.Player)
                 if p.holding is mug:
                     p.holding = None
