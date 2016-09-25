@@ -198,9 +198,9 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(table, components.Audio("heavy"))
 
         def puzzle_complete():
-            for ent, p in self.world.get_component(components.Player):
-                if p.holding is books:
-                    p.holding = None
+            p = self.world.component_for_entity(player, components.Player)
+            if p.holding is books:
+                p.holding = None
             self.world.delete_entity(books)
             complaint = self.world.create_entity()
             image = self.font.render("Way to take your time.", False, (255, 128, 0))
@@ -341,9 +341,9 @@ class SceneThree(scenebase.SceneBase):
         vase = self.world.create_entity()
 
         def puzzle_complete():
-            for ent, p in self.world.get_component(components.Player):
-                if p.holding is vase:
-                    p.holding = None
+            p = self.world.component_for_entity(player, components.Player)
+            if p.holding is vase:
+                p.holding = None
             self.world.delete_entity(vase)
             complaint = self.world.create_entity()
             image = self.font.render("Way to take your time.", False, (255, 128, 0))
