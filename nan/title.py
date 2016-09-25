@@ -19,7 +19,7 @@ class TitleScene(scenebase.SceneBase):
                 self.world.add_component(ent, components.ChangePosition((p.x, p.y + 100), .25))
                 self.world.add_component(ent, components.ChangeAlpha(0, .25))
             def change_scene():
-                self.switch_to_scene(text.TextScene("This is the story of an adventurer named NaN, known across the land for his unwavering enthusiasm for helping anyone with anything. 3 years ago he even protected his hometown from a vicious wandering dragon...", game.SceneOne()))
+                self.switch_to_scene(text.TextScene("This is the story of an adventurer named NaN, known across the land for his unwavering enthusiasm for helping anyone with anything. His abilities were known far and wide, and indeed our story even begins with him defeating a dragon with ease...", game.SceneOne()))
             next_scene = self.world.create_entity()
             self.world.add_component(next_scene, components.Delay(.5, change_scene))
 
@@ -143,7 +143,7 @@ class SceneSelect(scenebase.SceneBase):
         scene2 = self.world.create_entity()
         self.world.add_component(scene2, components.Position(980, 100))
         self.world.add_component(scene2, components.Platform())
-        self.world.add_component(scene2, components.Image("HouseScene2BG.png"))
+        self.world.add_component(scene2, components.Image("OutsideSceneBG.png"))
         self.world.add_component(scene2, components.Size(320, 180))
         self.world.add_component(scene2, components.Reactive())
         self.world.add_component(scene2, components.Click(open_scene, game.SceneTwo()))
@@ -158,7 +158,7 @@ class SceneSelect(scenebase.SceneBase):
         scene3 = self.world.create_entity()
         self.world.add_component(scene3, components.Position(300, 350))
         self.world.add_component(scene3, components.Platform())
-        self.world.add_component(scene3, components.Image("HouseSceneBlacksmithBG.png"))
+        self.world.add_component(scene3, components.Image("HouseScene2BG.png"))
         self.world.add_component(scene3, components.Size(320, 180))
         self.world.add_component(scene3, components.Reactive())
         self.world.add_component(scene3, components.Click(open_scene, game.SceneThree()))
@@ -173,7 +173,7 @@ class SceneSelect(scenebase.SceneBase):
         scene4 = self.world.create_entity()
         self.world.add_component(scene4, components.Position(980, 350))
         self.world.add_component(scene4, components.Platform())
-        self.world.add_component(scene4, components.Image("HouseScene1BG.png"))
+        self.world.add_component(scene4, components.Image("HouseScene3BG.png"))
         self.world.add_component(scene4, components.Size(320, 180))
         self.world.add_component(scene4, components.Reactive())
         self.world.add_component(scene4, components.Click(open_scene, game.SceneFour()))
@@ -184,6 +184,36 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(label4, components.Image(image=image))
         self.world.add_component(label4, components.Size(image.get_width(), image.get_height()))
         self.world.add_component(label4, components.Reactive())
+
+        scene5 = self.world.create_entity()
+        self.world.add_component(scene5, components.Position(300, 600))
+        self.world.add_component(scene5, components.Platform())
+        self.world.add_component(scene5, components.Image("HouseSceneBlacksmithBG.png"))
+        self.world.add_component(scene5, components.Size(320, 180))
+        self.world.add_component(scene5, components.Reactive())
+        self.world.add_component(scene5, components.Click(open_scene, game.SceneFive()))
+
+        label5 = self.world.create_entity()
+        image = self.font.render("5", False, (0, 128, 0))
+        self.world.add_component(label5, components.Position(300, 670))
+        self.world.add_component(label5, components.Image(image=image))
+        self.world.add_component(label5, components.Size(image.get_width(), image.get_height()))
+        self.world.add_component(label5, components.Reactive())
+
+        scene6 = self.world.create_entity()
+        self.world.add_component(scene6, components.Position(980, 600))
+        self.world.add_component(scene6, components.Platform())
+        self.world.add_component(scene6, components.Image("HouseScene1BG.png"))
+        self.world.add_component(scene6, components.Size(320, 180))
+        self.world.add_component(scene6, components.Reactive())
+        self.world.add_component(scene6, components.Click(open_scene, game.SceneSix()))
+
+        label6 = self.world.create_entity()
+        image = self.font.render("6", False, (0, 128, 0))
+        self.world.add_component(label6, components.Position(980, 670))
+        self.world.add_component(label6, components.Image(image=image))
+        self.world.add_component(label6, components.Size(image.get_width(), image.get_height()))
+        self.world.add_component(label6, components.Reactive())
 
 
         for ent, (i, p, s, r) in self.world.get_components(components.Image, components.Position, components.Size, components.Reactive):
