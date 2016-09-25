@@ -143,7 +143,7 @@ class SceneTwo(scenebase.SceneBase):
         chest = self.world.create_entity()
         self.world.add_component(chest, components.Position(540, 320))
         self.world.add_component(chest, components.Velocity(0, 0))
-        self.world.add_component(chest, components.Image("Chest.png"))
+        self.world.add_component(chest, components.Image("chest.png"))
         self.world.add_component(chest, components.Size(80, 80))
 
         guy = self.world.create_entity()
@@ -170,23 +170,7 @@ class SceneTwo(scenebase.SceneBase):
         self.world.add_component(table, components.Image("Table.png"))
         self.world.add_component(table, components.Size(80, 80))
 
-        books = self.world.create_entity()
-        self.world.add_component(books, components.Position(760, 560))
-        self.world.add_component(books, components.Velocity(0, 0))
-        self.world.add_component(books, components.Image("PileOfBooks.png"))
-        self.world.add_component(books, components.Size(80, 80))
-        self.world.add_component(books, components.Touch(bookshelf, puzzle_complete)))
-
-        lamp = self.world.create_entity()
-        self.world.add_component(lamp, components.Position(760, 170))
-        self.world.add_component(lamp, components.Image("Chandelier.png"))
-        self.world.add_component(lamp, components.Size(80, 80))
-
-        def next_scene():
-            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
-
         def puzzle_complete():
-            self.world.component_for_entity(dragon, components.Animation).frame = 1
             complaint = self.world.create_entity()
             image = self.font.render("Way to take your time.", False, (255, 128, 0))
             self.world.add_component(complaint, components.Position(500, 500))
@@ -195,6 +179,21 @@ class SceneTwo(scenebase.SceneBase):
             self.world.add_component(complaint, components.ChangePosition((960, 260), 2, interpolation.Smooth(), fade_out))
             self.world.add_component(complaint, components.ChangeAlpha(0, 2))
             self.world.add_component(complaint, components.Delay(3, next_scene))
+
+        books = self.world.create_entity()
+        self.world.add_component(books, components.Position(760, 560))
+        self.world.add_component(books, components.Velocity(0, 0))
+        self.world.add_component(books, components.Image("PileOfBooks.png"))
+        self.world.add_component(books, components.Size(80, 80))
+        self.world.add_component(books, components.Touch(bookshelf, puzzle_complete))
+
+        lamp = self.world.create_entity()
+        self.world.add_component(lamp, components.Position(760, 170))
+        self.world.add_component(lamp, components.Image("Chandelier.png"))
+        self.world.add_component(lamp, components.Size(80, 80))
+
+        def next_scene():
+            self.switch_to_scene(text.TextScene("And thusly NaN took out yet another dragon. But eventually there were no more dragons to kill, but there remained bills to pay. NaN began to take on side jobs...", SceneOne()))
 
         def fade_out():
             for ent, i in self.world.get_component(components.Image):
