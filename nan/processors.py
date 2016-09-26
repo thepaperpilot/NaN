@@ -49,7 +49,9 @@ class RenderProcessor(esper.Processor):
         for ent, (c, p) in self.world.get_components(components.Circle, components.Position):
             pygame.draw.circle(screen, c.color, (int(p.x), int(p.y)), c.radius, c.width)
 
-        for ent, r in self.world.get_component(components.Rect):
+        for ent, (r, p) in self.world.get_components(components.Rect, components.Position):
+            r.rect.x = p.x
+            r.rect.y = p.y
             pygame.draw.rect(screen, r.color, r.rect)
 
         for ent, (pl, p, s) in self.world.get_components(components.Player, components.Position, components.Size):
@@ -271,8 +273,9 @@ class PhysicsProcessor(esper.Processor):
                     flame = self.world.create_entity()
                     self.world.add_component(flame, components.Position(p.x - s.width / 2 + random.random() * s.width, p.y - s.height / 2 + random.random() * s.height))
                     self.world.add_component(flame, components.Size(60,60))
-                    self.world.add_component(flame, components.Circle((255, random.random() * 255, 0), int(random.random() * 5)))
-                    self.world.add_component(flame, components.ChangePosition((p.x - s.width / 2 - 50 + random.random() * (s.width + 100), p.y - s.height / 2 - random.random() * 100), 1, interpolation.PowIn(2), self.remove_entity, flame))
+                    size = int(random.random() * 5)
+                    self.world.add_component(flame, components.Rect((255, random.random() * 255, 0), pygame.Rect(0, 0, size, size)))
+                    self.world.add_component(flame, components.ChangePosition((p.x - s.width / 2 - 25 + random.random() * (s.width + 50), p.y - s.height / 2 - random.random() * 100), 1, interpolation.PowIn(2), self.remove_entity, flame))
                     self.world.add_component(flamEnt, components.Delay(.03))
 
                 for ent, (f2, tp, ts) in self.world.get_components(components.Flammable, components.Position, components.Size):
