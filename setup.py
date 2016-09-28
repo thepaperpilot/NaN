@@ -7,7 +7,8 @@ setup(
 	name = 'NaN',
 	url = 'https://github.com/thepaperpilot/NaN',
 	windows = [{'script': "nan/core.py"}],
-	options = {'py2exe': {'packages': ['esper', 'pygame']}},
+	options = {'py2exe': {'packages': ['esper', 'pygame'], 'bundle_files': 1, 'compressed': True}},
+	zipfile = None,
 	packages = ['nan'],
     package_data={'': ['*.png', 'kenpixel.ttf', 'README.txt']},
 )

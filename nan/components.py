@@ -88,11 +88,12 @@ class Over:
 class Touch:
     active = False
 
-    def __init__(self, target=None, touch=None, multi=False, rect=pygame.Rect(0,0,0,0)):
+    def __init__(self, target=None, multi=False, rect=pygame.Rect(0,0,0,0), touch=None, *args):
         self.target = target
-        self.touch = touch
         self.multi = multi
         self.rect = rect
+        self.touch = touch
+        self.args = args
 
 class Circle:
     def __init__(self, color=(0,128,0), radius=0.0, width=0):
@@ -122,10 +123,11 @@ class RotationalVelocity:
 class ChangePosition:
     current = None
 
-    def __init__(self, target=(0,0), time=0, interp=interpolation.InterpolationBase(), chain=None, *args):
+    def __init__(self, target=(0,0), time=0, interp=interpolation.InterpolationBase(), relative=False, chain=None, *args):
         self.target = target
         self.time = time
         self.interp = interp
+        self.relative = relative
         self.chain = chain
         self.args = args
 
