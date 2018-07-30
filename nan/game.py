@@ -346,7 +346,7 @@ class SceneFive(scenebase.SceneBase):
 
         player = get_player(self.world)
 
-        for i in [("WoodPlatform3.png", 760, 390, 720, 40), ("WoodPlatformHalf.png", 280, 500, 120, 40), ("WoodPlatformThird.png", 360, 400, 80, 40), ("WoodPlatformThird.png", 200, 560, 80, 40)]:
+        for i in [("WoodPlatform3.png", 760, 390, 720, 40), ("WoodPlatformHalf.png", 280, 500, 120, 40), ("WoodPlatformThird.png", 360, 440, 80, 40), ("WoodPlatformThird.png", 200, 560, 80, 40)]:
             platform = create_entity(self.world, i[0], pygame.Rect(i[1], i[2], i[3], i[4]))
             self.world.add_component(platform, components.Platform())
             self.world.add_component(platform, components.Background())
