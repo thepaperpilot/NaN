@@ -273,7 +273,7 @@ class PhysicsProcessor(esper.Processor):
                     flame = self.world.create_entity()
                     self.world.add_component(flame, components.Position(p.x - s.width / 2 + random.random() * s.width, p.y - s.height / 2 + random.random() * s.height))
                     self.world.add_component(flame, components.Size(60,60))
-                    size = int(random.random() * 5)
+                    size = int(random.random() * 20)
                     self.world.add_component(flame, components.Rect((255, random.random() * 255, 0), pygame.Rect(0, 0, size, size)))
                     self.world.add_component(flame, components.ChangePosition((-25 + random.random() * 50, -50 - random.random() * 100), 1, interpolation.PowIn(2), True, self.remove_entity, flame))
                     self.world.add_component(flamEnt, components.Delay(.03))
