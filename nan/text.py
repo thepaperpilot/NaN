@@ -8,13 +8,13 @@ import os
 
 class TextScene(scenebase.SceneBase):
     def __init__(self, text, scene):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, None)
         self.text = text
         self.scene = scene
 
     def init(self):
-        self.font = pygame.font.Font("kenpixel.ttf", 42)
-
+        scenebase.SceneBase.init(self)
+        
         text = self.world.create_entity()
         image = pygame.Surface([1280,720], pygame.SRCALPHA, 32).convert_alpha()
         util.drawText(image, self.text, (255, 255, 255), pygame.Rect(100, 100, 1080, 520), self.font)
@@ -47,7 +47,7 @@ class TextScene(scenebase.SceneBase):
                 self.world.add_component(ent, components.ChangePosition((640, self.world.component_for_entity(ent, components.Position).y + 50), .5))
 
             self.world.add_component(text, components.Delay(1, next_scene))
-            pygame.mixer.Sound(os.path.join('audio', 'click')).play()
+            pygame.mixer.Sound(os.path.join(components.get_base_path(), 'audio', 'click')).play()
 
         def next_scene():
             self.switch_to_scene(self.scene)

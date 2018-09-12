@@ -57,14 +57,10 @@ def notify(world, font, message, from_scene, to_scene):
 
 class SceneOne(scenebase.SceneBase):
     def __init__(self):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, 'audio/Retro Reggae.ogg')
 
     def init(self):
-        self.font = pygame.font.Font("kenpixel.ttf", 42)
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Retro Reggae.ogg')
-        pygame.mixer.music.play(-1)
+        scenebase.SceneBase.init(self)
 
         bg = create_entity(self.world, "IntroBG.png", pygame.Rect(640, 360, 1280, 720))
         self.world.add_component(bg, components.Background())
@@ -84,7 +80,7 @@ class SceneOne(scenebase.SceneBase):
             self.world.component_for_entity(damage, components.Position).y = 320
             self.world.component_for_entity(damage, components.Size).width = image.get_width()
             self.world.component_for_entity(damage, components.Size).height = image.get_height()
-            pygame.mixer.Sound(os.path.join('audio', 'dragon.ogg')).play()
+            pygame.mixer.Sound(os.path.join(components.get_base_path(), 'audio', 'dragon.ogg')).play()
 
         dragon = self.world.create_entity()
         self.world.add_component(dragon, components.Position(1000, 500))
@@ -121,14 +117,10 @@ class SceneOne(scenebase.SceneBase):
 
 class SceneTwo(scenebase.SceneBase):
     def __init__(self):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, 'audio/Retro Comedy.ogg')
 
     def init(self):
-        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Retro Comedy.ogg')
-        pygame.mixer.music.play(-1)
+        scenebase.SceneBase.init(self)
 
         bg = create_entity(self.world, "OutsideSceneBG.png", pygame.Rect(640, 360, 1280, 720))
         self.world.add_component(bg, components.Background())
@@ -178,14 +170,10 @@ class SceneTwo(scenebase.SceneBase):
 
 class SceneThree(scenebase.SceneBase):
     def __init__(self):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, 'audio/Retro Polka.ogg')
 
     def init(self):
-        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Retro Polka.ogg')
-        pygame.mixer.music.play(-1)
+        scenebase.SceneBase.init(self)
 
         bg = create_entity(self.world, "HouseScene2BG.png", pygame.Rect(640, 360, 1280, 720))
         self.world.add_component(bg, components.Background())
@@ -269,14 +257,10 @@ class SceneFour(scenebase.SceneBase):
     count = 0
 
     def __init__(self):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, 'audio/Retro Beat.ogg')
 
     def init(self):
-        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Retro Beat.ogg')
-        pygame.mixer.music.play(-1)
+        scenebase.SceneBase.init(self)
 
         bg = create_entity(self.world, "HouseScene3BG.png", pygame.Rect(640, 360, 1280, 720))
         self.world.add_component(bg, components.Background())
@@ -331,15 +315,10 @@ class SceneFour(scenebase.SceneBase):
 
 class SceneFive(scenebase.SceneBase):
     def __init__(self):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, 'audio/Space Cadet.ogg')
 
     def init(self):
-        self.font = pygame.font.Font("kenpixel.ttf", 42)
-        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Space Cadet.ogg')
-        pygame.mixer.music.play(-1)
+        scenebase.SceneBase.init(self)
 
         bg = create_entity(self.world, "HouseSceneBlacksmithBG.png", pygame.Rect(640, 360, 1280, 720))
         self.world.add_component(bg, components.Background())
@@ -458,14 +437,10 @@ class SceneFive(scenebase.SceneBase):
 
 class SceneSix(scenebase.SceneBase):
     def __init__(self):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, 'audio/Space Cadet.ogg')
 
     def init(self):
-        self.small_font = pygame.font.Font("kenpixel.ttf", 16)
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.fadeout(100)
-        pygame.mixer.music.load('audio/Space Cadet.ogg')
-        pygame.mixer.music.play(-1)
+        scenebase.SceneBase.init(self)
 
         bg = create_entity(self.world, "HouseScene1BG.png", pygame.Rect(640, 360, 1280, 720))
         self.world.add_component(bg, components.Background())

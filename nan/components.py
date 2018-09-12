@@ -1,6 +1,15 @@
 import os
+import sys
 import interpolation
 import pygame
+
+def get_base_path():
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        return sys._MEIPASS
+    except Exception:
+        return os.path.abspath(".")
 
 class Player:
     facing_right=True
@@ -38,7 +47,7 @@ class Background: # Just an identifier component, because I can't/don't know how
 class Image:
     def __init__(self, file=None, image=None, blend=0, alpha=255):
         if file:
-            self.image = pygame.image.load(os.path.join('images', file)).convert_alpha()
+            self.image = pygame.image.load(os.path.join(get_base_path(), 'images', file)).convert_alpha()
         else:
             self.image = image
         self.blend = blend
@@ -54,7 +63,7 @@ class Reactive:
 class Audio:
     def __init__(self, file=None, sound=None):
         if file:
-            self.sound = pygame.mixer.Sound(os.path.join('audio', file))
+            self.sound = pygame.mixer.Sound(os.path.join(get_base_path(), 'audio', file))
         else:
             self.sound = sound
 
@@ -63,7 +72,7 @@ class Animation:
 
     def __init__(self, file=None, image=None, splitx=0, framelength=-1, frame=0, blend=0, alpha=255):
         if file:
-            self.image = pygame.image.load(os.path.join('images', file)).convert_alpha()
+            self.image = pygame.image.load(os.path.join(get_base_path(), 'images', file)).convert_alpha()
         else:
             self.image = image
         self.splitx=splitx

@@ -2,6 +2,8 @@ import pygame
 import title
 import os
 import game
+import components
+import scenebase
 
 def run_game(width, height, titletext, fps, starting_scene):
     pygame.init()
@@ -11,11 +13,20 @@ def run_game(width, height, titletext, fps, starting_scene):
     clock = pygame.time.Clock()
     pygame.mixer.init()
 
+    font_path = os.path.join(components.get_base_path(), "kenpixel.ttf")
+    font = pygame.font.Font(font_path, 42)
+    small_font = pygame.font.Font(font_path, 16)
+    large_font = pygame.font.Font(font_path, 72)
+    titlefont = pygame.font.Font(font_path, 144)
+    scenebase.SceneBase.font = font
+    scenebase.SceneBase.small_font = small_font
+    scenebase.SceneBase.large_font = large_font
+    scenebase.SceneBase.titlefont = titlefont
+
     starting_scene.init()
     active_scene = starting_scene
 
-    font = pygame.font.Font("kenpixel.ttf", 24)
-    bg = pygame.image.load(os.path.join('images', 'menubg.png')).convert()
+    bg = pygame.image.load(os.path.join(components.get_base_path(), 'images', 'menubg.png')).convert()
 
     while active_scene is not None:
         dt = clock.tick(fps)
@@ -48,7 +59,7 @@ def run_game(width, height, titletext, fps, starting_scene):
 
         screen.blit(pygame.transform.scale(small_screen, screen.get_size()), (0,0))
 
-        text = font.render("FPS: " + str(int(1000*1//dt)), True, (128, 255, 128))
+        text = small_font.render("FPS: " + str(int(1000*1//dt)), True, (128, 255, 128))
         screen.blit(text, (10, 10))
 
         if active_scene is not active_scene.next:

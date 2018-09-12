@@ -8,11 +8,10 @@ import math
 
 class TitleScene(scenebase.SceneBase):
     def __init__(self):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, None)
 
     def init(self):
-        self.font = pygame.font.Font("kenpixel.ttf", 72)
-        self.titlefont = pygame.font.Font("kenpixel.ttf", 144)
+        scenebase.SceneBase.init(self)
 
         def start_game():
             for ent, (p, i) in self.world.get_components(components.Position, components.Image):
@@ -46,9 +45,9 @@ class TitleScene(scenebase.SceneBase):
             size.height = image.get_height()
 
         start = self.world.create_entity()
-        image = self.font.render("start", False, (0, 128, 0))
+        image = self.large_font.render("start", False, (0, 128, 0))
         self.world.add_component(start, components.Position(640, 440))
-        self.world.add_component(start, components.Text("start", self.font))
+        self.world.add_component(start, components.Text("start", self.large_font))
         self.world.add_component(start, components.Image(image=image))
         self.world.add_component(start, components.Size(image.get_width(), image.get_height(), .75))
         self.world.add_component(start, components.Click(start_game))
@@ -56,9 +55,9 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_component(start, components.Audio("click"))
 
         scene = self.world.create_entity()
-        image = self.font.render("scene select", False, (0, 128, 0))
+        image = self.large_font.render("scene select", False, (0, 128, 0))
         self.world.add_component(scene, components.Position(640, 540))
-        self.world.add_component(scene, components.Text("scene select", self.font))
+        self.world.add_component(scene, components.Text("scene select", self.large_font))
         self.world.add_component(scene, components.Image(image=image))
         self.world.add_component(scene, components.Size(image.get_width(), image.get_height(), .75))
         self.world.add_component(scene, components.Click(scene_select))
@@ -66,9 +65,9 @@ class TitleScene(scenebase.SceneBase):
         self.world.add_component(scene, components.Audio("click"))
 
         quitbutton = self.world.create_entity()
-        image = self.font.render("quit", False, (0, 128, 0))
+        image = self.large_font.render("quit", False, (0, 128, 0))
         self.world.add_component(quitbutton, components.Position(640, 640))
-        self.world.add_component(quitbutton, components.Text("quit", self.font))
+        self.world.add_component(quitbutton, components.Text("quit", self.large_font))
         self.world.add_component(quitbutton, components.Image(image=image))
         self.world.add_component(quitbutton, components.Size(image.get_width(), image.get_height(), .75))
         self.world.add_component(quitbutton, components.Click(quit_game))
@@ -88,10 +87,10 @@ class TitleScene(scenebase.SceneBase):
 
 class SceneSelect(scenebase.SceneBase):
     def __init__(self):
-        scenebase.SceneBase.__init__(self)
+        scenebase.SceneBase.__init__(self, None)
 
     def init(self):
-        self.font = pygame.font.Font("kenpixel.ttf", 72)
+        scenebase.SceneBase.init(self)
 
         def go_back():
             self.switch_to_scene(TitleScene())
@@ -101,7 +100,7 @@ class SceneSelect(scenebase.SceneBase):
 
         def highlight(entity):
             t = self.world.component_for_entity(entity, components.Text)
-            image = t.font.render("> " + t.text + " <", False, (0, 128, 128))
+            image = t.large_font.render("> " + t.text + " <", False, (0, 128, 128))
             self.world.component_for_entity(entity, components.Image).image = image
             size = self.world.component_for_entity(entity, components.Size)
             size.width = image.get_width()
@@ -109,15 +108,15 @@ class SceneSelect(scenebase.SceneBase):
 
         def lowlight(entity):
             t = self.world.component_for_entity(entity, components.Text)
-            image = t.font.render(t.text, False, t.color)
+            image = t.large_font.render(t.text, False, t.color)
             self.world.component_for_entity(entity, components.Image).image = image
             size = self.world.component_for_entity(entity, components.Size)
             size.width = image.get_width()
 
         back = self.world.create_entity()
-        image = self.font.render("back", False, (0, 128, 0))
+        image = self.large_font.render("back", False, (0, 128, 0))
         self.world.add_component(back, components.Position(640, 360))
-        self.world.add_component(back, components.Text("back", self.font))
+        self.world.add_component(back, components.Text("back", self.large_font))
         self.world.add_component(back, components.Image(image=image))
         self.world.add_component(back, components.Size(image.get_width(), image.get_height(), .75))
         self.world.add_component(back, components.Reactive())
@@ -134,7 +133,7 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene1, components.Click(open_scene, game.SceneOne()))
 
         label1 = self.world.create_entity()
-        image = self.font.render("1", False, (0, 128, 0))
+        image = self.large_font.render("1", False, (0, 128, 0))
         self.world.add_component(label1, components.Position(300, 170))
         self.world.add_component(label1, components.Image(image=image))
         self.world.add_component(label1, components.Size(image.get_width(), image.get_height()))
@@ -149,7 +148,7 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene2, components.Click(open_scene, game.SceneTwo()))
 
         label2 = self.world.create_entity()
-        image = self.font.render("2", False, (0, 128, 0))
+        image = self.large_font.render("2", False, (0, 128, 0))
         self.world.add_component(label2, components.Position(980, 170))
         self.world.add_component(label2, components.Image(image=image))
         self.world.add_component(label2, components.Size(image.get_width(), image.get_height()))
@@ -164,7 +163,7 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene3, components.Click(open_scene, game.SceneThree()))
 
         label3 = self.world.create_entity()
-        image = self.font.render("3", False, (0, 128, 0))
+        image = self.large_font.render("3", False, (0, 128, 0))
         self.world.add_component(label3, components.Position(300, 420))
         self.world.add_component(label3, components.Image(image=image))
         self.world.add_component(label3, components.Size(image.get_width(), image.get_height()))
@@ -179,7 +178,7 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene4, components.Click(open_scene, game.SceneFour()))
 
         label4 = self.world.create_entity()
-        image = self.font.render("4", False, (0, 128, 0))
+        image = self.large_font.render("4", False, (0, 128, 0))
         self.world.add_component(label4, components.Position(980, 420))
         self.world.add_component(label4, components.Image(image=image))
         self.world.add_component(label4, components.Size(image.get_width(), image.get_height()))
@@ -194,7 +193,7 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene5, components.Click(open_scene, game.SceneFive()))
 
         label5 = self.world.create_entity()
-        image = self.font.render("5", False, (0, 128, 0))
+        image = self.large_font.render("5", False, (0, 128, 0))
         self.world.add_component(label5, components.Position(300, 670))
         self.world.add_component(label5, components.Image(image=image))
         self.world.add_component(label5, components.Size(image.get_width(), image.get_height()))
@@ -209,7 +208,7 @@ class SceneSelect(scenebase.SceneBase):
         self.world.add_component(scene6, components.Click(open_scene, game.SceneSix()))
 
         label6 = self.world.create_entity()
-        image = self.font.render("6", False, (0, 128, 0))
+        image = self.large_font.render("6", False, (0, 128, 0))
         self.world.add_component(label6, components.Position(980, 670))
         self.world.add_component(label6, components.Image(image=image))
         self.world.add_component(label6, components.Size(image.get_width(), image.get_height()))
