@@ -90,9 +90,10 @@ class Click:
 class Over:
     active = False
 
-    def __init__(self, enterf=None, exitf=None):
+    def __init__(self, enterf=None, exitf=None, entity=None):
         self.enterf = enterf
         self.exitf = exitf
+        self.entity = entity
 
 class Touch:
     active = False
