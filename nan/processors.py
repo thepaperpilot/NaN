@@ -70,10 +70,10 @@ class InputProcessor(esper.Processor):
                 for ent, (s, p, o) in self.world.get_components(components.Size, components.Position, components.Over):
                     if p.x - s.width * s.scale // 2 <= x and p.x + s.width * s.scale // 2 >= x and p.y - s.height * s.scale / 2 <= y and p.y + s.height * s.scale // 2 >= y:
                         if not o.active:
-                            o.enterf(ent)
+                            o.enterf(ent if o.entity is None else o.entity)
                             o.active = True
                     elif o.active:
-                        o.exitf(ent)
+                        o.exitf(ent if o.entity is None else o.entity)
                         o.active = False
                 for ent, (i, p, s, r) in self.world.get_components(components.Image, components.Position, components.Size, components.Reactive):
                     if r.x == 0:
